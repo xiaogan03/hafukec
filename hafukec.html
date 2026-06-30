@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="Description" content="信息予你无限">
+<meta name="Keywords" content="信息予你无限">
+<link rel="icon" href="https://game.gtimg.cn/images/dfm/cp/havvkrelink/logo2.png">
+<title>信息予你无限</title>
+<style>
+/* ============ CSS Reset ============ */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td{margin:0;padding:0;}
+table{border-collapse:collapse;border-spacing:0;}
+address,caption,cite,code,dfn,em,strong,th,var{font-weight:normal;font-style:normal;}
+ol,ul{list-style:none;}
+caption{text-align:left;}
+h1,h2,h3,h4,h5,h6{font-weight:normal;font-size:100%;}
+fieldset,img,abbr,acronym{border:0;}
+a{text-decoration:none;overflow:hidden;}
+.hide{display:block;width:0;height:0;overflow:hidden;}
+*{box-sizing:border-box;}
+
+/* ============ Base ============ */
+html,body{
+  min-width:12rem;
+  font-size:calc(100 / 3840 * 100vw);
+  overflow:hidden auto;
+}
+body{
+  font:20px/1.5 'fzlth','simhei',tahoma,'\5b8b\4f53',"\9ED1\4F53",sans-serif;overflow-x:hidden;background:#ecf3fa;
+}
+
+@font-face{
+  font-family:'fzlth';
+  src:url('./字体/fzlth.woff') format('truetype');
+}
+@font-face{
+  font-family:'fzltzh';
+  src:url('./字体/fzltzh.woff') format('truetype');
+}
+@font-face{
+  font-family:'fzltth';
+  src:url('./字体/fzltth.woff') format('truetype');
+}
+
+input{font-family:'fzlth';}
+
+/* autofill fix */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active{
+  font-size:0.3rem !important;
+  font-family:'fzlth',sans-serif !important;
+  -webkit-text-size-adjust:100% !important;
+  -webkit-font-smoothing:antialiased !important;
+  box-shadow:0 0 0 100px #efefef inset !important;
+}
+.form-group input:-webkit-autofill,
+.form-group input:-webkit-autofill:hover,
+.form-group input:-webkit-autofill:focus,
+.form-group input:-webkit-autofill:active{
+  font-size:0.3rem !important;
+  font-family:'fzlth',sans-serif !important;
+  color:#000000 !important;
+}
+input[type="text"],
+input[type="password"]{
+  font-family:'fzlth' !important;
+  font-size:0.3rem !important;
+  line-height:1.5 !important;
+  padding:0.1rem 0.3rem !important;
+  height:0.98rem !important;
+  box-sizing:border-box !important;
+  display:flex;
+  align-items:center;
+}
+input[type="password"]{
+  text-align:left;
+  vertical-align:middle;
+  -webkit-text-security:disc;
+  text-security:disc;
+}
+
+/* ============ Overlays ============ */
+.admin-overlay,.password-overlay,.unlocked-overlay{
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp3.jpg) no-repeat 50% 50%;
+  background-size:cover;
+  width:100vw;height:100vh;z-index:9999;
+  position:fixed;top:0;left:0;
+  display:none;
+}
+.password-overlay,.unlocked-overlay{
+  background:rgba(0,0,0,0.5);
+}
+
+/* Login / Password / Unlocked Box */
+.login-box,.password-box,.unlocked-box{
+  width:7.92rem;padding:0.4rem 0 1rem;
+  background:#ffffff;border-radius:0.2rem;
+  box-shadow:0 0 0.5rem rgba(133,150,170,0.5);
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+}
+.login-box,.password-box{animation:loginanim 0.5s ease-in-out;}
+
+@keyframes loginanim{
+  0%{transform:translate(-50%,-40%);opacity:0;}
+  100%{transform:translate(-50%,-50%);opacity:1;}
+}
+
+.login-logo{
+  display:block;width:1.71rem;height:2.45rem;
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/logo1.png) no-repeat 50% 0;
+  background-size:100% auto;margin:0 auto;
+}
+.login-txt{
+  display:flex;justify-content:space-between;align-items:center;
+  margin:0.28rem auto;font-size:0.22rem;color:#494949;
+  text-align:center;line-height:0.5rem;
+}
+.login-txt i{width:2.3rem;height:0.02rem;background:#d3d3d3;}
+
+.form-group{margin:0 auto 0.24rem;width:6.7rem;}
+.form-group label{
+  font-size:0.28rem;color:#494949;line-height:0.5rem;
+  margin-bottom:0.16rem;display:block;font-family:'fzltzh';
+}
+.form-group input{
+  width:6.7rem;height:0.98rem;border:0.02rem solid #d0d0d0;
+  border-radius:0.1rem;padding:0.1rem 0.3rem;margin:0 auto;
+  display:block;background:#efefef;font-size:0.3rem;color:#555555;
+}
+
+.login-btn{
+  display:flex;justify-content:center;align-items:center;flex-direction:column;
+  margin:0.6rem auto 0;
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn3.png) no-repeat 50% 0;
+  background-size:100% auto;
+  width:4.11rem;height:0.95rem;
+  font-size:0.3428rem;color:#ffffff;text-align:center;line-height:0.44rem;
+  transition:all 0.2s ease-in-out;cursor:pointer;
+}
+.login-btn span{display:block;font-size:0.14rem;text-transform:uppercase;line-height:0.2rem;}
+.login-btn:hover{filter:brightness(1.1) drop-shadow(0 0.02rem 0.1rem #c6c7cb);}
+
+.login-error{
+  font-size:0.26rem;color:#ff0000;text-align:center;line-height:0.5rem;
+  margin:0.3rem auto 0;position:absolute;width:100%;left:0;bottom:0.4rem;
+  display:none;animation:headShake 1s linear;
+}
+@keyframes headShake{
+  0%{transform:translateX(0)}
+  6.5%{transform:translateX(-6px) rotateY(-9deg)}
+  18.5%{transform:translateX(5px) rotateY(7deg)}
+  31.5%{transform:translateX(-3px) rotateY(-5deg)}
+  43.5%{transform:translateX(2px) rotateY(3deg)}
+  50%{transform:translateX(0)}
+}
+
+/* ============ Folder / Doc View ============ */
+.folder-box,.doc-picbox{
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp4.jpg) no-repeat 50% 0 fixed;
+  background-size:cover;
+  width:100vw;height:100vh;z-index:9999;
+  position:fixed;top:0;left:0;overflow:hidden auto;
+  display:none;
+}
+.folder-title,.doc-title{
+  position:absolute;top:0;left:0;height:2.8rem;
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp4.jpg) no-repeat 50% 0 fixed;
+  background-size:100% auto;z-index:10;width:100%;
+}
+.folder-tit{
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/title1.png) no-repeat 50% 50%;
+  background-size:38.4rem auto;width:100%;height:100%;font-size:0;
+}
+.folder-logout{
+  position:absolute;top:1.12rem;right:1.26rem;
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn4.png) no-repeat 50% 0;
+  background-size:100% auto;
+  width:4.52rem;height:0.97rem;
+  font-size:0.36rem;color:#5894de;text-align:center;line-height:0.96rem;
+  font-family:'fzltzh';cursor:pointer;
+  transition:all 0.2s ease-in-out;
+}
+.folder-logout:hover{filter:brightness(1.1);box-shadow:0 0.02rem 0.2rem #85b1e7;}
+
+.folder-content,.doc-content{padding-top:3.08rem;}
+.folder-content{animation:contentanim 0.5s ease-in-out;}
+@keyframes contentanim{
+  0%{transform:translateY(-1rem);opacity:0;}
+  100%{transform:translateY(0);opacity:1;}
+}
+
+.folder-ct,.doc-ct{
+  width:17.74rem;display:flex;justify-content:flex-start;
+  align-items:flex-start;flex-wrap:wrap;margin:0 auto;
+}
+.doc-ct{width:12.2rem;}
+
+.folder-ct a,.doc-ct a{
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/bg2.png) no-repeat 50% 0;
+  background-size:100% auto;
+  width:5.4rem;height:4.2rem;margin:0 0.25rem 0.5rem;
+  border-radius:0.1rem;box-shadow:0 0 0.3rem rgba(175,193,214,0.3);
+  display:flex;justify-content:center;align-items:center;flex-direction:column;
+  transition:all 0.2s ease-in-out;cursor:pointer;
+}
+.folder-ct a:hover,.doc-ct a:hover{
+  transform:translateY(-0.1rem);
+  box-shadow:0 0.2rem 0.3rem rgba(175,193,214,0.8);
+}
+.folder-ct a img,.doc-ct a img{display:block;width:1.44rem;margin:0 auto;}
+.doc-ct a img{width:4.22rem;height:2.38rem;object-fit:cover;}
+.folder-name{
+  font-size:0.34rem;color:#494949;text-align:center;line-height:0.42rem;
+  font-family:'fzltzh';margin:0.26rem auto 0;
+}
+
+.suo-txt1,.suo-txt2{
+  display:flex;justify-content:center;align-items:center;
+  font-size:0.26rem;color:#9fb0cb;text-align:center;line-height:0.34rem;
+  margin:0.2rem auto 0;
+}
+.suo-txt1 i,.suo-txt2 i{
+  width:0.21rem;height:0.3rem;
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder_icon1.png) no-repeat 50% 0;
+  background-size:100% auto;margin-right:0.2rem;
+}
+.suo-txt2 i{background-image:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder_icon2.png);}
+.suo-txt2{
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder_btn1.png) no-repeat 50% 0;
+  background-size:100% auto;
+  width:2.87rem;height:0.68rem;color:#ffffff;font-family:'fzltzh';
+}
+
+.doc-tit{
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/tit_bg1.png) no-repeat 50% 50%;
+  background-size:38.4rem auto;width:100%;height:100%;
+  font-size:0.6rem;color:#403f3f;text-align:center;line-height:2.8rem;
+  font-family:'fzltth';display:flex;justify-content:center;align-items:center;
+}
+.doc-back{
+  position:absolute;top:1rem;right:2.1rem;
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn5.png) no-repeat 50% 0;
+  background-size:100% auto;
+  width:2.92rem;height:0.97rem;
+  font-size:0.36rem;color:#5894de;text-align:center;line-height:0.96rem;
+  font-family:'fzltzh';cursor:pointer;
+  transition:all 0.2s ease-in-out;
+}
+.doc-back:hover{filter:brightness(1.1);box-shadow:0 0.02rem 0.2rem #85b1e7;}
+
+.doc-ct a i{
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc1.png) no-repeat 50% 0;
+  background-size:100% auto;
+  width:1.42rem;height:1.72rem;margin:0 auto;display:block;
+}
+.doc-ct a.doc-suo i{
+  background-image:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc2.png);
+}
+.doc-name{
+  font-size:0.3rem;color:#494949;text-align:center;line-height:0.4rem;
+  margin:0.4rem auto 0;
+}
+
+/* ============ Document Detail ============ */
+.doc-text{
+  width:26.26rem;padding:0.58rem 1.06rem;margin:0 auto 1rem;
+  background:#ffffff;border-radius:0.2rem;
+  box-shadow:0 0 0.3rem rgba(175,193,214,0.3);
+}
+.doc-text h2{
+  font-size:0.4rem;color:#202020;text-align:left;line-height:0.5rem;
+  font-family:'fzltzh';margin:0.46rem auto 0;
+}
+.doc-text h3{
+  border-top:1px solid #c5daec;height:1rem;
+  display:flex;justify-content:flex-start;align-items:center;
+  font-size:0.36rem;color:#202020;text-align:left;line-height:0.46rem;
+  font-family:'fzltzh';margin:0.3rem auto 0;padding-top:0.3rem;
+}
+.doc-text h3:first-child{border-top:none;}
+.doc-text h2+h3{border-top:none;}
+.doc-text h3 i{background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA+xpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDkuMS1jMDAxIDc5LjE0NjI4OTk3NzcsIDIwMjMvMDYvMjUtMjM6NTc6MTQgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI1LjAgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyNi0wNi0wOFQxMToxNjozMCswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjYtMDYtMDhUMTg6MzM6MDIrMDg6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjYtMDYtMDhUMTg6MzM6MDIrMDg6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjZEQTE4RTU2NjMyNTExRjFBRkFBQUVCRDVEMDM3REExIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjZEQTE4RTU3NjMyNTExRjFBRkFBQUVCRDVEMDM3REExIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NkRBMThFNTQ2MzI1MTFGMUFGQUFBRUJENUQwMzdEQTEiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NkRBMThFNTU2MzI1MTFGMUFGQUFBRUJENUQwMzdEQTEiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6jcKxpAAAAjklEQVR42mI8euvNQwYGBjkG0sAvII5iYSAdgDRGAvE6FjI0RgDxehCHiVyNIMBCgsZwIN6ALMhCpMYwIN6ILsFErkZCNoM0hgLxJlwKWPBoDAHizficxYJDYzAQbyEUGCxYNAYB8VZiooCJXI3INoM0BgLxNlKSGwtUYwAQbyc1kbNAE/kZMjIIA0CAAQAm1iBEACw2uAAAAABJRU5ErkJggg==) no-repeat 50% 0;background-size: 100% auto;width: 0.15rem;height: 0.4rem;margin-right: 0.2rem;}
+.doc-text p,.doc-text ul{
+  font-size:0.26rem;color:#6d7888;text-align:left;line-height:0.46rem;
+  margin:0.2rem auto 0;width:23.3rem;
+}
+.doc-text img{display:block;width:100%;}
+.doc-table{
+  width:24.1rem;margin:0.44rem auto 0;background:#fafdff;
+  font-size:0.3rem;color:#494949;text-align:left;line-height:0.4rem;
+}
+.doc-table th{
+  height:1.1rem;color:#2362af;font-family:'fzltzh';
+  background:#eff8ff;padding:0 0.88rem;
+}
+.doc-table td{padding:0 0.88rem;height:1.1rem;}
+.doc-table td:first-child{width:35%;}
+.doc-table td.copy-code{cursor:pointer;color:#2362af;font-family:monospace;transition:all 0.15s;}
+.doc-table td.copy-code:hover{color:#038aff;background:#e8f4ff;}
+.doc-table td.copy-code.copied{color:#20c75e;}
+.col1{color:#20c75e;}
+.col2{color:#dd7d0b;}
+.col3{color:#e61a29;}
+
+.doc-text ul li{
+  font-size:0.26rem;color:#6d7888;text-align:left;line-height:0.62rem;
+  position:relative;
+}
+.doc-text ul li::after{
+  position:absolute;top:50%;left:-0.32rem;
+  width:0.1rem;height:0.1rem;background:#2362af;border-radius:50%;
+  transform:translateY(-50%);content:'';
+}
+
+/* ============ Image Viewer ============ */
+.doc-picct{
+  width:30.48rem;height:96%;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.doc-picct img{width:100%;height:calc(100% - 1.3rem);object-fit:contain;}
+.pic-name{
+  height:1.1rem;display:flex;justify-content:flex-start;align-items:center;
+  font-size:0.3rem;color:#494949;line-height:0.4rem;text-align:left;
+}
+.pic-name i{
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc_icon1.png) no-repeat 50% 0;
+  background-size:100% auto;width:0.45rem;height:0.45rem;margin-right:0.2rem;
+}
+.doc-close{
+  position:absolute;top:0.4rem;right:0;width:0.52rem;height:0.52rem;
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc_close.png) no-repeat 50% 0;
+  background-size:100% auto;cursor:pointer;
+}
+.btn-down{
+  position:absolute;top:0.36rem;right:0.8rem;width:0.8rem;height:0.57rem;
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/down.png) no-repeat 50% 0;
+  background-size:100% auto;cursor:pointer;
+}
+
+/* ============ Password Overlay ============ */
+.password-box{padding-top:0.6rem;}
+.password-suo{
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder_icon3.png) no-repeat 50% 0;
+  background-size:100% auto;width:0.87rem;height:1.2rem;margin:0 auto;display:block;
+}
+.password-tit{
+  font-size:0.5rem;color:#494949;text-align:center;line-height:0.6rem;
+  margin:0.4rem auto 0;font-family:'fzlttzh';
+}
+.password-desc{
+  font-size:0.3rem;color:#858484;text-align:center;line-height:0.4rem;
+  margin:0.2rem auto 0;font-family:'fzlttzh';
+}
+.password-btn{
+  display:flex;justify-content:space-between;align-items:center;
+  margin:0.52rem auto 0;width:6.7rem;
+}
+.password-btn a{
+  font-size:0.28rem;color:#ffffff;border-radius:0.05rem;
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn6.png) no-repeat 50% 0;
+  background-size:6.7rem auto;
+  width:3.22rem;height:1.04rem;text-align:center;line-height:1.04rem;
+  cursor:pointer;transition:all 0.2s ease-in-out;
+}
+.password-btn a:hover{filter:brightness(1.1);box-shadow:0 0.02rem 0.1rem #afc1d6;}
+.password-btn a.password-btn-lock{background-position:0 0;}
+.password-btn a.password-btn-cancel{background-position:-3.48rem 0;color:#436b9b;}
+
+/* ============ Unlocked Modal ============ */
+.unlocked-close{
+  position:absolute;width:100%;height:100%;top:0;left:0;cursor:pointer;
+}
+.unlocked-box{padding:1.3rem 0;width:11.98rem;}
+.unlocked-suo{
+  background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/suo.png) no-repeat 50% 0;
+  background-size:100% auto;width:0.87rem;height:1.2rem;margin:0 auto;display:block;
+}
+.unlocked-tit{
+  font-size:0.5rem;color:#494949;text-align:center;line-height:0.7rem;
+  margin:0.3rem auto 0;font-family:'fzltzh';text-transform:uppercase;
+}
+.unlocked-desc{
+  font-size:0.3rem;color:#858484;text-align:center;line-height:0.4rem;
+  margin:0.1rem auto 0;font-family:'fzltzh';
+}
+/* toast */
+.copy-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#fff;color:#494949;padding:0.16rem 0.5rem;border-radius:0.08rem;font-size:0.26rem;font-family:'fzltzh';z-index:99999;pointer-events:none;opacity:0;box-shadow:0 0.02rem 0.16rem rgba(0,0,0,0.12);transition:all 0.25s ease;}
+.copy-toast.show{opacity:1;transform:translateX(-50%) translateY(-0.06rem);}
+</style>
+</head>
+<body>
+
+<img src="https://game.gtimg.cn/images/dfm/cp/havvkrelink/logo2.png" class="hide" alt="">
+
+<!-- ============ 登录页 ============ -->
+<div class="admin-overlay" id="adminOverlay" style="display:block;">
+  <div class="login-box">
+    <div class="login-logo"></div>
+    <p class="login-txt"><i></i><span>请输入管理员凭证以继续</span><i></i></p>
+    <div class="form-group">
+      <label>用户名 / Username</label>
+      <input type="text" id="username" placeholder="输入用户名..." maxlength="20" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>密码 / Password</label>
+      <input type="password" id="password" placeholder="输入密码..." maxlength="20" autocomplete="off">
+    </div>
+    <a href="javascript:;" class="login-btn" id="login">连 接<span>Connection</span></a>
+    <div class="login-error">⚠ <span class="admin-login-err">用户名或密码错误，请重新输入</span></div>
+  </div>
+</div>
+
+<!-- ============ 主界面 ============ -->
+<div class="folder-box" id="folderOverlay">
+  <!-- 目录页 -->
+  <div class="folder-content" id="folder-content">
+    <div class="folder-title">
+      <h2 class="folder-tit" id="nav-title">研究数据</h2>
+      <a href="javascript:;" class="folder-logout">退出 / LOGOUT</a>
+    </div>
+    <div class="folder-ct" id="folder-ct"></div>
+  </div>
+
+  <!-- 文档列表页 -->
+  <div class="doc-content" style="display:none;" id="doc-list">
+    <div class="doc-title">
+      <h2 class="doc-tit"><span id="doc-list-title"></span></h2>
+      <a href="javascript:;" class="doc-back" id="doc-list-back">返回</a>
+    </div>
+    <div class="doc-ct" id="doc-list-content"></div>
+  </div>
+
+  <!-- 文档详情页 -->
+  <div class="doc-content" style="display:none;" id="doc-detail">
+    <div class="doc-title">
+      <h2 class="doc-tit"><span id="doc-detail-title"></span></h2>
+      <a href="javascript:;" class="doc-back" id="doc-detail-back">返回</a>
+    </div>
+    <div class="doc-text" id="doc-detail-content"></div>
+  </div>
+</div>
+
+<!-- ============ 图片查看器 ============ -->
+<div class="doc-picbox" id="doc-picbox">
+  <div class="doc-picct">
+    <a href="javascript:;" class="doc-close"></a>
+    <a href="javascript:;" class="btn-down"></a>
+    <p class="pic-name"><i></i><span></span></p>
+    <img alt="">
+  </div>
+</div>
+
+<!-- ============ 密码弹窗 ============ -->
+<div class="password-overlay" id="passwordOverlay">
+  <div class="password-box">
+    <p class="password-suo"></p>
+    <p class="password-tit">ACCESS RESTRICTED</p>
+    <p class="password-desc" id="pass-title">α原型脑机</p>
+    <p class="login-txt"><i></i><span>请输入访问密钥以解锁</span><i></i></p>
+    <div class="form-group">
+      <input type="password" id="password1" placeholder="输入密钥..." maxlength="20" autocomplete="off">
+    </div>
+    <div class="password-btn">
+      <a href="javascript:;" class="password-btn-lock">解锁/UNLOCK</a>
+      <a href="javascript:;" class="password-btn-cancel">取消/CANCEL</a>
+    </div>
+    <div class="login-error">⚠ <span class="pwd-err">密码错误，请重新输入</span></div>
+  </div>
+</div>
+
+<!-- ============ 未解锁弹窗 ============ -->
+<div class="unlocked-overlay" id="unlockedOverlay">
+  <a href="javascript:;" class="unlocked-close"></a>
+  <div class="unlocked-box">
+    <p class="unlocked-suo"></p>
+    <p class="unlocked-tit">Locked</p>
+    <p class="unlocked-desc">未解锁</p>
+  </div>
+</div>
+
+<div class="copy-toast" id="copyToast"></div>
+<script>
+(function(){
+  'use strict';
+
+  // ==================== 模拟数据（真实原站数据） ====================
+  var FOLDER_ICON = 'https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png';
+  var FOLDER_ICON_LOCKED = 'https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder2.png';
+
+  var mockData = {
+    folders: [
+      { id:'accident', name:'人员伤亡事故调查', icon:FOLDER_ICON_LOCKED, locked:true, password:'123' },
+      { id:'location', name:'哈夫克分部选址报告', icon:FOLDER_ICON, locked:false, password:'' },
+      { id:'nuclear', name:'核电招聘部', icon:FOLDER_ICON, locked:false, password:'' },
+      { id:'alpha', name:'脑机α原型机', icon:FOLDER_ICON, locked:false, password:'' },
+      { id:'draft', name:'草稿', icon:FOLDER_ICON, locked:false, password:'' },
+      { id:'gunmod', name:'改枪码', icon:FOLDER_ICON, locked:false, password:'' },
+      { id:'thesis', name:'毕业设计', icon:FOLDER_ICON, locked:false, password:'' }
+    ],
+    documents: {
+      thesis: [
+        {
+          id:'thesis_main', name:'基于PWM的直流电机调速控制器设计', type:'text', locked:false, password:'', src:'',
+          content: '<h2>基于PWM的直流电机调速控制器设计</h2><table class="doc-table"><tr><th>项目</th><th>内容</th></tr><tr><td>学院</td><td>电子工程学院 / 自动化</td></tr><tr><td>学生</td><td>甘强 / 2262200116</td></tr><tr><td>指导教师</td><td>彭涛 / 工程师</td></tr><tr><td>类型</td><td>工程设计</td></tr></table><h3><i></i>摘要</h3><p>传统直流电机调速器大多运行在开环模式，缺乏转速反馈和电流保护。本设计以ARM Cortex-M4微控制器（STM32F411CEU6）为核心，用MOSFET H桥（TB6612）驱动直流减速电机（MG513），电机尾部GMR磁式编码器送回转速形成闭环，霍尔电流传感器（ACS712）实时监控绕组电流。</p><p>硬件按控制、驱动、检测、交互四层搭在自制PCB底板上。软件方面：通用定时器输出50kHz PWM载波；编码器接口直接读A/B正交脉冲并做4倍频加32位软件扩展；位置式PID每100ms算一次更新占空比；电流采样走DMA循环缓冲加32点均值滤波。过流阈值0.7A，堵转判定要求占空比>15%、转速<10RPM且持续600ms才触发。</p><p>人机交互：EC11旋转编码器以5RPM步进调速；6个按键管启停、模式切换和三档预设转速（100/200/300RPM）；OLED四行显示占空比、设定转速、实测转速和电流值。</p><h3><i></i>系统架构</h3><table class="doc-table"><tr><th>层级</th><th>器件</th><th>功能</th></tr><tr><td>控制层</td><td>STM32F411CEU6</td><td>PWM输出、编码器采集、PID计算、故障逻辑</td></tr><tr><td>驱动层</td><td>TB6612 MOSFET H桥</td><td>驱动MG513直流减速电机</td></tr><tr><td>检测层</td><td>GMR编码器 + ACS712</td><td>转速反馈 + 电流采样</td></tr><tr><td>交互层</td><td>OLED + EC11旋钮 + 按键 + LED</td><td>显示、调速、操作、报警</td></tr></table><h3><i></i>关键技术参数</h3><table class="doc-table"><tr><th>参数</th><th>数值</th></tr><tr><td>PWM载波频率</td><td>50 kHz</td></tr><tr><td>PID控制周期</td><td>100 ms</td></tr><tr><td>PID参数</td><td>Kp=0.25, Ki=0.10, Kd=0.005</td></tr><tr><td>调速范围</td><td>0 ~ 300 RPM</td></tr><tr><td>稳态误差</td><td class="col1">≤ 1.5%</td></tr><tr><td>过流保护阈值</td><td>0.7 A</td></tr><tr><td>堵转判定延迟</td><td>600 ms</td></tr><tr><td>调速步进</td><td>5 RPM</td></tr><tr><td>预设档位</td><td>100 / 200 / 300 RPM</td></tr></table><h3><i></i>三重安全保护</h3><table class="doc-table"><tr><th>保护类型</th><th>触发条件</th><th>测试结果</th></tr><tr><td>过流保护</td><td>绕组电流 ≥ 0.7A</td><td class="col1">10/10 触发成功</td></tr><tr><td>堵转保护</td><td>占空比>15% + 转速<10RPM + 持续600ms</td><td class="col1">10/10 触发成功</td></tr><tr><td>ADC饱和保护</td><td>ADC采样值达到上限（检测开路故障）</td><td class="col1">10/10 触发成功</td></tr></table><h3><i></i>结论</h3><p>本设计实现了从硬件搭建到软件实现、从开环驱动到闭环控制的完整工程闭环。0~300RPM区间稳态误差不超过1.5%；过流、堵转、ADC饱和三项保护各测10次全部触发成功，无一误报。方案把感知、控制和保护做进了一个闭环里，对教学实验和小型自动化设备有直接参考意义。</p>'
+        }
+      ],
+      gunmod: [
+        {
+          id:'gunmod_codes', name:'改枪码', type:'text', locked:false, password:'', src:'',
+          content: '<h2>改枪码</h2><h3><i></i>烽火地带</h3><table class="doc-table"><tr><th>武器</th><th>改枪码</th></tr><tr><td>MK47突击步枪</td><td class="copy-code">6K4D6JC04OC2K0IAVBQIK</td></tr><tr><td>K416突击步枪</td><td class="copy-code">6K4D70K04OC2K0IAVBQIK</td></tr><tr><td>AS Val突击步枪</td><td class="copy-code">6K4D6QS04OC2K0IAVBQIK</td></tr><tr><td>M7战斗步枪</td><td class="copy-code">6K4D6TO04OC2K0IAVBQIK</td></tr><tr><td>M7战斗步枪</td><td class="copy-code">6K4D6UC04OC2K0IAVBQIK</td></tr><tr><td>MK4冲锋枪</td><td class="copy-code">6K4D74C04OC2K0IAVBQIK</td></tr><tr><td>MK4冲锋枪</td><td class="copy-code">6K4D74S04OC2K0IAVBQIK</td></tr><tr><td>M700狙击步枪</td><td class="copy-code">6K4D7CK04OC2K0IAVBQIK</td></tr><tr><td>M700狙击步枪</td><td class="copy-code">6K4D7DC04OC2K0IAVBQIK</td></tr><tr><td>M700狙击步枪</td><td class="copy-code">6K4D7DO04OC2K0IAVBQIK</td></tr><tr><td>M14射手步枪</td><td class="copy-code">6KEAQH404OC2K0IAVBQIK</td></tr><tr><td>M14射手步枪</td><td class="copy-code">6KEAQF804OC2K0IAVBQIK</td></tr><tr><td>M14射手步枪</td><td class="copy-code">6KEAQFS04OC2K0IAVBQIK</td></tr></table>'
+        }
+      ],
+      accident: [
+        {
+          id:'accident_report', name:'事故调查报告', type:'text', locked:true, password:'123', src:'',
+          content: '<h2>现场异常人员受伤及昏迷事故调查报告</h2><table class="doc-table"><tr><th>项目</th><th>内容</th></tr><tr><td>编制部门</td><td>安保部/事故调查组</td></tr><tr><td>事故时间</td><td>4月16日</td></tr><tr><td>事故地点</td><td>AZ3防护围栏外侧，区域草堆</td></tr></table><h3><i></i>一、事故概述</h3><p>哈夫克雇员在AZ3防护围栏外侧草堆中被巡视人员发现，处于深度昏迷状态。伤者已移交医疗机构进行紧急救治。</p><h3><i></i>二、伤情记录</h3><table class="doc-table"><tr><th>检查项目</th><th>检查结果</th></tr><tr><td>意识状态</td><td>深度昏迷，对强光及痛觉刺激无明显反应</td></tr><tr><td>呼吸情况</td><td>微弱，尚存</td></tr><tr><td>体表创伤</td><td>躯干及四肢多处不规则创口，部分渗血已凝固</td></tr><tr><td>着装状况</td><td>衣物多处破损、拉扯，附着大量泥土、草屑及植物碎叶</td></tr></table><h3><i></i>三、现场勘验</h3><table class="doc-table"><tr><th>勘验项目</th><th>勘验结果</th></tr><tr><td>坠落痕迹</td><td>草堆有人体砸压及翻滚痕迹，草皮呈不规则倒伏状；推测伤者从上方山坡坠落，草堆起缓冲作用</td></tr><tr><td>动物痕迹</td><td>事发地周围发现动物毛发及脚印，初步判断为犬类</td></tr><tr><td>人类活动痕迹</td><td>周边区域发现人类活动迹象</td></tr><tr><td>围栏状态</td><td>围栏顶部防攀爬设施存在局部损坏，有衣物纤维残留及血迹斑点</td></tr></table><h3><i></i>四、初步原因分析</h3><p>综合现场客观证据，初步判断：伤者在围栏外侧遭到追逐，在逃跑过程中坠下山坡，因撞击或震荡导致昏迷。周边发现的犬类毛发及脚印表明追逐来源可能为犬只；人类活动痕迹的存在不排除有人员牵涉其中。具体定性需待进一步调查确认。</p><h3><i></i>五、后续工作</h3><ul><li>调取事发时段周边监控记录</li><li>对犬类毛发及脚印进行物种鉴定</li><li>排查周边人类活动痕迹来源</li><li>待伤者苏醒后进行问询</li></ul>'
+        },
+        {
+          id:'accident_diary', name:'工作个人日记', type:'text', locked:false, password:'', src:'',
+          content: '<h2><span>【私密文件-代号C】</span></h2><p>雇员编号：089376423<br>岗位：设施外围巡逻组</p><h3><i></i><span>4月13日 | 天气：阴 | 夜班</span></h3><p>今晚的外围巡视极其压抑，连虫鸣声都听不见。<br>凌晨一点左右，我巡查到北侧监控盲区那片林地边缘。就在手电筒光束扫过灌木丛的瞬间，我发誓我看到了一双眼睛，而且那绝对不是普通野生动物瞳孔的反光，我能看出来它在观察我，甚至说在审视我。我停在原地足足一分钟没敢动弹，直到一阵冷风吹过来我才发现自己后背全被冷汗浸透了。</p><h3><i></i><span>4月14日 | 天气：晴 | 白班</span></h3><p>大白天的外围总算让人能喘口气。<br>下午巡逻到东侧河边水闸附近时，碰见一个陌生人，不知道他怎么越过监控网到附近的。我喊了一嗓子，他远远地还冲我招了招手。他手里举着带稳定器的微单相机，一边顺着河岸走一边对着镜头说话。我例行上去询问，毕竟这片荒郊野岭的，任何人都显得可疑。他解释自己是一名短视频UP主，来取景时迷了路，我查看了下他的账号：3707006600874797。没发现什么疑点，但我还是警告了他，让他离这片区域远点，毕竟如果是别的同事，他现在可能已经吃上枪子儿了。</p><h3><i></i><span>4月15日 | 天气：多云转阵雨 | 夜班</span></h3><p>它又来了。<br>今晚巡线到一半，那种被注视的强烈直觉再次出现。我猛地一转头，就在不到五十米外的树影深处，那双红色的眼睛再次死死锁定了我的位置。这一次我壮着胆子，立刻把战术手电调到最强档位，直接对着那个方向照了过去。<br>结果光柱打过去的瞬间，那双眼睛直接消失了。<br>也是在这一瞬间，我想起来了，白天值班的时候没发现的疑点。<br>他的视频里总是有一只灰白色的大狗，但看见他时，这只狗并不在他身边。<br>明天如果他还在附近出现，我必须抓住他问个明白。</p>'
+        }
+      ],
+      location: [
+        { id:'location_report', name:'分部选址综合报告', type:'text', locked:false, password:'', src:'',
+          content:'<h2>哈夫克分部选址综合报告</h2><h3><i></i>候选地点对比</h3><table class="doc-table" ><tr><th>地点</th><th>地质稳定</th><th>供电保障</th><th>交通便利</th><th>综合评价</th></tr><tr><td>A区-山谷基地</td><td class="col1">优</td><td class="col2">中</td><td class="col3">差</td><td>备选</td></tr><tr><td>B区-城郊工业园区</td><td class="col1">优</td><td class="col1">优</td><td class="col1">优</td><td>推荐</td></tr><tr><td>C区-滨海试验场</td><td class="col2">中</td><td class="col1">优</td><td class="col2">中</td><td>备选</td></tr></table><h3><i></i>推荐结论</h3><p>综合考量后推荐B区-城郊工业园区作为哈夫克分部首选地址。该区域基础设施完善，距离总部仅40分钟车程，且周边配套可满足500人规模运营需求。</p>' },
+        { id:'location_map', name:'选址地图标注', type:'image', locked:false, password:'', src:'https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc_b1.jpg', content:'' }
+      ],
+      nuclear: [
+        { id:'nuclear_exam', name:'招聘考试试题', type:'text', locked:false, password:'', src:'',
+          content:'<h2>核电招聘部 · 招聘考试试题</h2><h3><i></i>第一部分：基础知识</h3><p>1. 简述核电站的基本工作原理。</p><p>2. 核反应堆中控制棒的主要作用是什么？</p><p>3. 解释放射性半衰期的概念。</p><h3><i></i>第二部分：安全规范</h3><p>4. 列出核电站三级安全防护体系。</p><p>5. 在辐射超标区域工作时，ALARA原则具体指什么？</p><h3><i></i>第三部分：应急处理</h3><p>6. 描述一回路冷却剂泄漏事故的标准处置流程。</p>' },
+        { id:'nuclear_poster', name:'招聘海报', type:'image', locked:false, password:'', src:'https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc_b2.jpg', content:'' }
+      ],
+      alpha: [
+        { id:'alpha_brain', name:'原型机技术文档', type:'text', locked:false, password:'', src:'',
+          content:'<h2>脑机α原型机 · 技术文档</h2><h3><i></i>设计概要</h3><p>α原型采用七层堆叠式架构，单芯片集成度达到行业领先水平。核心处理器采用自研DSP阵列。</p><h3><i></i>关键技术参数</h3><table class="doc-table" ><tr><th>指标</th><th>目标值</th><th>当前值</th><th>状态</th></tr><tr><td>信号采样率</td><td>≥1000Hz</td><td>1256Hz</td><td class="col1">达标</td></tr><tr><td>通道数</td><td>≥64</td><td>72</td><td class="col1">达标</td></tr><tr><td>信噪比</td><td>≥12dB</td><td>10.8dB</td><td class="col2">接近</td></tr><tr><td>延迟</td><td>≤20ms</td><td>23ms</td><td class="col3">超标</td></tr></table>' }
+      ],
+      draft: [
+        { id:'draft_sketch', name:'概念设计草图', type:'image', locked:false, password:'', src:'https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc_b1.jpg', content:'' }
+      ]
+    }
+  };
+
+  // ==================== 状态管理 ====================
+  var state = {
+    loginUser: '',
+    loginPass: '',
+    currentFolderId: '',
+    currentFolderPassword: '',
+    currentDocId: '',
+    currentDocPassword: '',
+    passwordTarget: '',   // 'folder' | 'doc'
+    passwordTargetId: '',
+    passwordTargetName: ''
+  };
+
+  // ==================== DOM 引用 ====================
+  var $ = function(s){ return document.querySelector(s); };
+  var $$ = function(s){ return document.querySelectorAll(s); };
+
+  var dom = {
+    adminOverlay: $('#adminOverlay'),
+    folderOverlay: $('#folderOverlay'),
+    folderContent: $('#folder-content'),
+    folderCt: $('#folder-ct'),
+    docList: $('#doc-list'),
+    docListTitle: $('#doc-list-title'),
+    docListContent: $('#doc-list-content'),
+    docDetail: $('#doc-detail'),
+    docDetailTitle: $('#doc-detail-title'),
+    docDetailContent: $('#doc-detail-content'),
+    docPicbox: $('#doc-picbox'),
+    passwordOverlay: $('#passwordOverlay'),
+    password1: $('#password1'),
+    passTitle: $('#pass-title'),
+    unlockedOverlay: $('#unlockedOverlay'),
+    loginError: $('#adminOverlay .login-error'),
+    pwdError: $('#passwordOverlay .login-error'),
+    adminLoginErr: $('.admin-login-err'),
+    pwdErr: $('.pwd-err'),
+    loginBtn: $('#login'),
+    username: $('#username'),
+    password: $('#password'),
+    picImg: $('#doc-picbox img'),
+    picName: $('#doc-picbox .pic-name span')
+  };
+
+  // ==================== 页面切换 ====================
+  function showPage(page) {
+    if (page === 'login') {
+      dom.adminOverlay.style.display = 'block';
+      dom.folderOverlay.style.display = 'none';
+    } else {
+      dom.adminOverlay.style.display = 'none';
+      dom.folderOverlay.style.display = 'block';
+      dom.folderContent.style.display = (page === 'folder') ? 'block' : 'none';
+      dom.docList.style.display = (page === 'doc_list') ? 'block' : 'none';
+      dom.docDetail.style.display = (page === 'doc_detail') ? 'block' : 'none';
+    }
+  }
+
+  // ==================== 错误处理 ====================
+  function showPasswordError() {
+    dom.pwdError.style.display = 'block';
+    dom.password1.disabled = true;
+    $('.password-btn-lock').style.pointerEvents = 'none';
+    var countDown = 5;
+    dom.pwdErr.textContent = '密码错误，' + countDown + '秒后可重新输入';
+    var timer = setInterval(function(){
+      countDown--;
+      if (countDown > 0) {
+        dom.pwdErr.textContent = '密码错误，' + countDown + '秒后可重新输入';
+      } else {
+        clearInterval(timer);
+        dom.pwdError.style.display = 'none';
+        dom.password1.disabled = false;
+        dom.password1.value = '';
+        $('.password-btn-lock').style.pointerEvents = 'auto';
+      }
+    }, 1000);
+  }
+
+  function showLoginError(msg) {
+    if (msg) { dom.adminLoginErr.textContent = msg; }
+    else { dom.adminLoginErr.textContent = '用户名或密码错误，请重新输入'; }
+    dom.loginError.style.display = 'block';
+    dom.loginBtn.style.pointerEvents = 'none';
+    setTimeout(function(){
+      dom.loginError.style.display = 'none';
+      dom.loginBtn.style.pointerEvents = 'auto';
+    }, 5000);
+  }
+
+  // ==================== 渲染函数 ====================
+  function renderFolders() {
+    var html = '';
+    mockData.folders.forEach(function(item){
+      var lockedClass = item.locked ? 'folder-suo' : '';
+      var lockedContent = item.locked
+        ? '<p class="suo-txt1"><i></i><span>加密·需要访问密钥</span></p><p class="suo-txt2"><i></i><span>ENCRYPTED</span></p>'
+        : '';
+      html += '<a href="javascript:;" data-folder="' + item.id + '" data-name="' + item.name + '" data-locked="' + (item.locked ? '1' : '0') + '" data-password="' + (item.password || '') + '" class="' + lockedClass + '">'
+        + '<img src="' + item.icon + '" alt="">'
+        + '<p class="folder-name">' + item.name + '</p>'
+        + lockedContent
+        + '</a>';
+    });
+    dom.folderCt.innerHTML = html;
+  }
+
+  function renderDocuments(folderId) {
+    var list = mockData.documents[folderId] || [];
+    var html = '';
+    list.forEach(function(item){
+      var docClass = item.locked ? 'doc-suo' : (item.type === 'image' ? 'doc-pic' : '');
+      var docContent = '';
+      if (item.type === 'image') {
+        if (item.locked) {
+          docContent = '<i></i><p class="doc-name">' + item.name + '</p>';
+        } else {
+          docContent = '<img src="' + item.src + '" alt=""><p class="doc-name">' + item.name + '</p>';
+        }
+      } else {
+        docContent = '<i></i><p class="doc-name">' + item.name + '</p>';
+      }
+      html += '<a href="javascript:;" data-doc="' + item.id + '" data-name="' + item.name + '" data-locked="' + (item.locked ? '1' : '0') + '" data-password="' + (item.password || '') + '" data-type="' + (item.type || '') + '" data-src="' + (item.src || '') + '" class="' + docClass + '">' + docContent + '</a>';
+    });
+    dom.docListContent.innerHTML = html;
+  }
+
+  // ==================== 数据加载（模拟） ====================
+  function loadFolders() {
+    renderFolders();
+    showPage('folder');
+  }
+
+  function loadDocuments(folderId) {
+    state.currentFolderId = folderId;
+    var folder = mockData.folders.find(function(f){ return f.id === folderId; });
+    dom.docListTitle.textContent = folder ? folder.name : '';
+    renderDocuments(folderId);
+    showPage('doc_list');
+    dom.passwordOverlay.style.display = 'none';
+    dom.password1.value = '';
+    dom.pwdError.style.display = 'none';
+  }
+
+  function loadDocumentDetail(docId) {
+    state.currentDocId = docId;
+    // search all document arrays for the doc
+    var doc = null;
+    for (var folderId in mockData.documents) {
+      var found = mockData.documents[folderId].find(function(d){ return d.id === docId; });
+      if (found) { doc = found; break; }
+    }
+    if (doc) {
+      dom.docDetailTitle.textContent = doc.name;
+      dom.docDetailContent.innerHTML = doc.content || '';
+      showPage('doc_detail');
+    }
+  }
+
+  function verifyDocumentPassword(docId, password) {
+    // search for doc
+    var doc = null;
+    for (var folderId in mockData.documents) {
+      var found = mockData.documents[folderId].find(function(d){ return d.id === docId; });
+      if (found) { doc = found; break; }
+    }
+    if (doc && doc.password === password) {
+      return { code: 0, data: doc.src || '' };
+    }
+    return { code: 403, msg: '密码错误' };
+  }
+
+  // ==================== 事件绑定 ====================
+  // 登录
+  dom.loginBtn.addEventListener('click', function(){
+    var username = dom.username.value;
+    var password = dom.password.value;
+
+    if (username === '111' && password === '111') {
+      state.loginUser = username;
+      state.loginPass = password;
+      loadFolders();
+    } else {
+      showLoginError('');
+    }
+  });
+
+  // 回车登录
+  dom.password.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') { dom.loginBtn.click(); }
+  });
+
+  // 退出
+  $('.folder-logout').addEventListener('click', function(){
+    state.loginUser = '';
+    state.loginPass = '';
+    state.currentFolderId = '';
+    state.currentFolderPassword = '';
+    state.currentDocId = '';
+    state.currentDocPassword = '';
+    dom.username.value = '';
+    dom.password.value = '';
+    showPage('login');
+  });
+
+  // 点击目录（事件委托）
+  dom.folderCt.addEventListener('click', function(e){
+    var a = e.target.closest('a');
+    if (!a) return;
+    var folderId = a.getAttribute('data-folder');
+    var folderName = a.getAttribute('data-name');
+    var isLocked = a.getAttribute('data-locked') === '1';
+
+    if (isLocked) {
+      state.passwordTarget = 'folder';
+      state.passwordTargetId = folderId;
+      state.passwordTargetName = folderName;
+      dom.passTitle.textContent = folderName;
+      dom.passwordOverlay.style.display = 'block';
+    } else {
+      state.currentFolderPassword = '';
+      loadDocuments(folderId);
+    }
+  });
+
+  // 点击文档（事件委托）
+  dom.docListContent.addEventListener('click', function(e){
+    var a = e.target.closest('a');
+    if (!a) return;
+    var docId = a.getAttribute('data-doc');
+    var docName = a.getAttribute('data-name');
+    var isLocked = a.getAttribute('data-locked') === '1';
+    var docType = a.getAttribute('data-type') || '';
+
+    if (isLocked) {
+      state.passwordTarget = 'doc';
+      state.passwordTargetId = docId;
+      state.passwordTargetName = docName;
+      dom.passTitle.textContent = docName;
+      dom.passwordOverlay.style.display = 'block';
+    } else if (docType === 'image') {
+      var src = a.getAttribute('data-src');
+      if (src) {
+        dom.picImg.src = src;
+        var pureSrc = src.split('?')[0].split('#')[0];
+        var suffix = pureSrc.split('.').pop();
+        dom.picName.textContent = docName + '.' + suffix;
+        dom.docPicbox.style.display = 'block';
+      }
+    } else {
+      state.currentDocPassword = '';
+      loadDocumentDetail(docId);
+    }
+  });
+
+  // 列表页返回
+  $('#doc-list-back').addEventListener('click', function(){
+    showPage('folder');
+    state.currentFolderId = '';
+    state.currentFolderPassword = '';
+  });
+
+  // 详情页返回
+  $('#doc-detail-back').addEventListener('click', function(){
+    showPage('doc_list');
+    state.currentDocId = '';
+    state.currentDocPassword = '';
+  });
+
+  // 点击代码复制到剪贴板（事件委托）
+  var copyToast = document.getElementById('copyToast');
+  var toastTimer = null;
+  function showToast(msg){
+    clearTimeout(toastTimer);
+    copyToast.textContent = msg;
+    copyToast.classList.add('show');
+    toastTimer = setTimeout(function(){ copyToast.classList.remove('show'); }, 1200);
+  }
+  dom.docDetailContent.addEventListener('click', function(e){
+    var td = e.target.closest('.copy-code');
+    if (!td) return;
+    var code = td.textContent.trim();
+    if (!code) return;
+    navigator.clipboard.writeText(code).then(function(){
+      td.classList.add('copied');
+      setTimeout(function(){ td.classList.remove('copied'); }, 800);
+      showToast('已复制');
+    }).catch(function(){
+      // 降级方案
+      var ta = document.createElement('textarea');
+      ta.value = code;
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      td.classList.add('copied');
+      setTimeout(function(){ td.classList.remove('copied'); }, 800);
+      showToast('已复制');
+    });
+  });
+
+  // 密码弹窗解锁
+  $('.password-btn-lock').addEventListener('click', function(){
+    var pwd = dom.password1.value;
+    if (!pwd || pwd.trim() === '') return;
+
+    if (state.passwordTarget === 'folder') {
+      // 查找文件夹密码
+      var folder = mockData.folders.find(function(f){ return f.id === state.passwordTargetId; });
+      if (folder && folder.password === pwd) {
+        state.currentFolderPassword = pwd;
+        loadDocuments(state.passwordTargetId);
+      } else {
+        // 显示短暂的密码错误提示
+        dom.pwdErr.textContent = '密码错误，请重新输入';
+        dom.pwdError.style.display = 'block';
+        dom.password1.disabled = true;
+        $('.password-btn-lock').style.pointerEvents = 'none';
+        setTimeout(function(){
+          dom.pwdError.style.display = 'none';
+          dom.password1.disabled = false;
+          dom.password1.value = '';
+          $('.password-btn-lock').style.pointerEvents = 'auto';
+        }, 3000);
+        state.currentFolderPassword = '';
+      }
+    } else if (state.passwordTarget === 'doc') {
+      var res = verifyDocumentPassword(state.passwordTargetId, pwd);
+      if (res.code === 0) {
+        dom.passwordOverlay.style.display = 'none';
+        dom.password1.value = '';
+        dom.pwdError.style.display = 'none';
+
+        var docA = dom.docListContent.querySelector('a[data-doc="' + state.passwordTargetId + '"]');
+        if (docA) {
+          var docType = docA.getAttribute('data-type') || '';
+          if (docType === 'image') {
+            var src = res.data;
+            if (src) {
+              dom.picImg.src = src;
+              var pureSrc = src.split('?')[0].split('#')[0];
+              var suffix = pureSrc.split('.').pop();
+              dom.picName.textContent = docA.getAttribute('data-name') + '.' + suffix;
+              dom.docPicbox.style.display = 'block';
+            }
+          } else {
+            state.currentDocPassword = pwd;
+            loadDocumentDetail(state.passwordTargetId);
+          }
+        }
+      } else {
+        showPasswordError();
+      }
+    }
+  });
+
+  // 密码输入框回车
+  dom.password1.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') { $('.password-btn-lock').click(); }
+  });
+
+  // 密码弹窗取消
+  $('.password-btn-cancel').addEventListener('click', function(){
+    dom.passwordOverlay.style.display = 'none';
+    dom.password1.value = '';
+    dom.pwdError.style.display = 'none';
+    state.passwordTarget = '';
+    state.passwordTargetId = '';
+  });
+
+  // 图片弹窗关闭
+  $('#doc-picbox .doc-close').addEventListener('click', function(){
+    dom.docPicbox.style.display = 'none';
+  });
+
+  // 图片下载
+  $('#doc-picbox .btn-down').addEventListener('click', function(){
+    var src = dom.picImg.src;
+    if (!src) return;
+    fetch(src, { mode: 'cors' })
+      .then(function(res){ return res.blob(); })
+      .then(function(blob){
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = dom.picName.textContent || 'image';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      })
+      .catch(function(){
+        alert('图片下载失败，请长按图片另存为');
+      });
+  });
+
+  // 未解锁弹窗关闭
+  $('.unlocked-close').addEventListener('click', function(){
+    dom.unlockedOverlay.style.display = 'none';
+  });
+
+  // ==================== 初始化 ====================
+  dom.adminOverlay.style.display = 'block';
+  dom.folderOverlay.style.display = 'none';
+  dom.passwordOverlay.style.display = 'none';
+
+  console.log('信息予你无限 · 管理后台 · 静态演示版');
+  console.log('预设账号: admin / admin123');
+  console.log('加密文件夹密码(人员伤亡事故调查): 123');
+})();
+</script>
+
+</body>
+</html>

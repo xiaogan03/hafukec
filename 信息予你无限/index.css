@@ -1,0 +1,400 @@
+/* reset */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td{margin:0;padding:0;}
+table{border-collapse:collapse;border-spacing:0;}
+address,caption,cite,code,dfn,em,strong,th,var{font-weight:normal;font-style:normal;}
+ol,ul{list-style:none;}
+caption {text-align:left;}
+h1,h2,h3,h4,h5,h6{font-weight:normal;font-size:100%;}
+q:before,q:after{content:'';}
+fieldset,img,abbr,acronym{border:0;}
+body,html{min-width: 12rem;}
+/* basic */
+.c:before,.c:after{content:"";display:tadble;}
+.c:after{clear:both;}
+.c{zoom:1;}
+body{font:20px/1.5 'fzlth','simhei',tahoma,'\5b8b\4f53',"\9ED1\4F53",sans-serif;overflow-x: hidden;background: #ecf3fa;}
+a {text-decoration:none;overflow:hidden;}
+.fr-wrapper,body{min-width:12rem !important;overflow-x: hidden;}
+.hide{display:block;width:0;height:0;overflow:hidden;}
+.pr{position:relative;}
+.pa{position:absolute;}
+.db{display:block;text-indent:-999rem;font-size: 0;}
+.fl{float:left;}
+.fr{float:right;}
+*{box-sizing: border-box;}
+.gray,.swiper-button-disabled{-webkit-filter:grayscale(100%);-moz-filter:grayscale(100%);-ms-filter:grayscale(100%);-o-filter:grayscale(100%);filter:grayscale(100%);filter:gray;pointer-events:none;}
+html,body {
+  font-size: calc(100 / 3840 * 100vw);
+  overflow: hidden auto;
+}
+@font-face {
+  font-family: 'fzlth';
+  src: url('https://game.gtimg.cn/images/dfm/cp/havvkrelink/font/fzlth.woff') format('truetype');
+}
+@font-face {
+  font-family: 'fzltzh';
+  src: url('https://game.gtimg.cn/images/dfm/cp/havvkrelink/font/fzltzh.woff') format('truetype');
+}
+@font-face {
+  font-family: 'fzltth';
+  src: url('https://game.gtimg.cn/images/dfm/cp/havvkrelink/font/fzltth.woff') format('truetype');
+}
+input{font-family: 'fzlth';}
+
+/* 修复浏览器表单/密码自动填充样式：背景、文字、字体过小 */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+select:-webkit-autofill:active {
+  font-size: 0.3rem !important;
+  font-family: 'fzlth', sans-serif !important;
+  -webkit-text-size-adjust: 100% !important;
+  -webkit-font-smoothing: antialiased !important;
+  box-shadow: 0 0 0 100px #efefef inset !important;
+  -webkit-box-shadow: 0 0 0 100px #efefef inset !important;
+}
+
+input:-webkit-autofill::first-line,
+textarea:-webkit-autofill::first-line,
+select:-webkit-autofill::first-line {
+  font-size: 0.3rem !important;
+  font-family: 'fzlth', sans-serif !important;
+  -webkit-text-size-adjust: 100% !important;
+}
+
+.form-group input:-webkit-autofill,
+.form-group input:-webkit-autofill:hover,
+.form-group input:-webkit-autofill:focus,
+.form-group input:-webkit-autofill:active {
+  font-size: 0.3rem !important;
+  font-family: 'fzlth', sans-serif !important;
+  color: #000000 !important;
+  -webkit-text-size-adjust: 100% !important;
+}
+/* 给所有输入框强制统一核心渲染属性，消除浏览器差异 */
+input[type="text"],
+input[type="password"] {
+    /* 强制统一字体和字号，避免密码圆点的字体差异 */
+    font-family: 'fzlth' !important;
+    font-size: 0.3rem !important; /* 替换成你项目里的实际字号 */
+    line-height: 1.5 !important; /* 强制统一行高，解决基线问题 */
+ 
+    /* 统一内边距和高度，确保垂直居中 */
+    padding: 0.1rem 0.3rem !important;
+    height: 0.98rem !important; /* 或者用 min-height，避免内容撑开 */
+    box-sizing: border-box !important;
+
+    /* 垂直居中兜底 */
+    display: flex;
+    align-items: center;
+}
+
+/* 针对部分浏览器的特殊兼容 */
+input[type="password"] {
+    text-align: left;
+    vertical-align: middle;
+    background-image: linear-gradient(transparent, transparent);
+    background-position: left center;
+    background-size: auto 1em;
+    background-repeat: repeat-x;
+    font-family: 'fzlth'; /* 用等宽字体，确保圆点间距一致 */
+    text-shadow: 0 0 0 inherit; /* 消除圆点的默认阴影 */
+    letter-spacing: normal !important; /* 部分浏览器给密码框加了默认字间距 */
+    -webkit-text-security: disc; /* 可选：强制Chrome/Safari用圆点，避免自定义圆点差异 */
+    -moz-text-security: disc;
+    text-security: disc;
+}
+
+
+
+body{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp0.jpg) no-repeat 50% 0 fixed,url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp3.jpg) no-repeat 50% 0 fixed,url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp4.jpg) no-repeat 50% 0 fixed;background-size: 100% auto;}
+.wrapper{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp2.jpg) no-repeat 50% 21.52rem,url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp1.jpg) no-repeat 50% 0 fixed;background-size: 38.4rem auto;}
+.video_box{position: fixed;top: 0;left: 0;width: 100%;height: 21.52rem;}
+.video_box video{width: 100%;height: 100%;object-fit: cover;}
+.head{height: 21.52rem;position: relative;z-index: 2;}
+.logo{position: absolute;top: 0.76rem;left: 1.08rem;width:36.21rem;height: 20.06rem;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/line1.png) no-repeat 50% 0;background-size: 100% auto;}
+.slogan{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/slogan.png) no-repeat 50% 0;background-size: 100% auto;width: 13.83rem;height: 3.65rem;position: absolute;bottom: 3.2rem;left: 2.3rem;}
+.btn_open{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn1.png) no-repeat 50% 0;background-size: 100% auto;width: 6.14rem;height: 1.51rem;position: absolute;bottom: 2.68rem;left: 2.3rem;transition: all 0.2s ease-in-out;}
+.btn_open:hover{filter:drop-shadow(0 0.02rem 0.04rem #c6c7cb);}
+
+.content{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp2.jpg) no-repeat 50% 0;background-size: 38.4rem auto;position: relative;z-index: 2;}
+.part1{height: 12.7rem;display: flex;justify-content: space-between;align-items: center;padding: 0 6.76rem;}
+.s1_txt1{font-family: 'fzltzh';font-size: 0.8rem;color: #403f3f;line-height: 1.2rem;text-align: left;padding-left: 0.44rem;}
+.s1_txt2{font-family: 'fzlth';font-size: 0.4rem;color: #494949;line-height: 1rem;text-align: left;letter-spacing: 0.02rem;white-space: nowrap;}
+
+.partnew{width: 24.88rem;margin: 4.1rem auto 0;position: relative;}
+.new_swiper{width: 100%;margin: 0 auto;overflow: hidden;height: 11.48rem;}
+.new_box{width: 24.4rem;margin: 0 auto;display: flex;justify-content: space-between;align-items: flex-start;}
+.new_right{width: 13.03rem;flex-shrink: 0;}
+.new_right1{width: 13.32rem;padding-top: 0.1rem;}
+.new_right img{display: block;width: 100%;}
+.new_left{width: 10.62rem;flex-shrink: 0;font-size: 0.4rem;line-height: 0.8rem;color: #5d5d5d;text-align: left;letter-spacing: 0.04rem;}
+.new_tit{width: 9.28rem;height: 1.5rem;line-height: 1.4rem;border-bottom: 0.02rem solid #c9cfd5;font-size: 1rem;font-family: 'fzltzh';color: #393838;letter-spacing: 0;margin-top: -0.1rem;}
+.new_txt{margin: 0.56rem auto 0;}
+.partnew .s2_prev,.partnew .s2_next{top: 10.18rem;right: auto;left: 50%;margin-left: -5.9rem;}
+.partnew .s2_next{margin-left: 5.4rem}
+
+.part2{width: 24rem;margin: 3.2rem auto 0;}
+.s2_tit{font-family: 'fzltzh';font-size: 1rem;color: #393838;line-height: 2rem;text-align: left;}
+.s2_box{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/bg1.png) no-repeat 50% 0;background-size: 100% auto;width: 24.02rem;padding-top: 0.22rem;position: relative;margin: 0.5rem auto 0;}
+.s2_swiper{width: 24rem;margin: 0 auto;overflow: hidden;}
+.s2_swiper img{display: block;width: 100%;}
+.s2_txt1{font-size: 0.8rem;color: #393838;height: 1.4rem;line-height: 1.4rem;border-bottom: 0.02rem solid #c9cfd5;margin: 0.5rem auto 0;}
+.s2_txt2{font-size: 0.4rem;color: #5d5d5d;text-align: left;line-height: 0.6rem;margin: 0.4rem auto 0;height: 3rem;letter-spacing: 0.04rem;}
+.s2_prev,.s2_next{position: absolute;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn2.png) no-repeat 0 0;width: 0.56rem;height: 0.7rem;background-size: 1.93rem auto;right: 1.4rem;top: 11.14rem;cursor: pointer;z-index: 12;}
+.s2_next{background-position: -1.37rem 0;right: 0;}
+.s2_dot{display: flex;justify-content: center;align-items: center;}
+.s2_dot span{width: 3.3rem;height: 0.04rem;opacity: 1;border-radius: 0;background: rgba(121, 121, 126,0.3);transition: all 0.2s ease-in-out;}
+.s2_dot span.swiper-pagination-bullet-active{background: #038aff;width: 4.9rem;}
+
+.part3{margin: 5rem auto 0;width: 24rem;height: 15.8rem;display: flex;justify-content: space-between;align-items: flex-start;position: relative;}
+.s3_box1{width: 11rem;position: relative;z-index: 2;height: 12rem;}
+.s3_box1 img{width: 18.52rem;display: block;pointer-events: none;position: absolute;top: -6.52rem;left: -6.76rem;}
+.s3_box2{width: 21rem;flex-shrink: 0;margin-left: -9rem;position: relative;height: 15.8rem;}
+.s3_box2 img{width: 28.5rem;display: block;pointer-events: none;position: absolute;top: 0;right: -6.96rem;}
+.s3_txt1{font-size: 1.2rem;line-height: 1.8rem;font-family: 'fzltzh';color: #393939;text-align: left;}
+.s3_txt2{font-size: 0.4rem;line-height: 0.6rem;color: #5d5d5d;text-align: left;width: 6.6rem;margin-top: 0.3rem;}
+.s3_txt2 span{color: #2362af;}
+.s3_box1 .s3_ctbox .s3_txt2{width: 6.2rem;letter-spacing: 0.02rem;}
+.s3_ctbox{position: absolute;top: 0;left: 0.2rem;width: 100%;height: 100%;}
+.s3_box2 .s3_ct{position: absolute;bottom: 0;right: 0.4rem;}
+.s3_box2 .s3_ctbox,.s3_box1 .s3_ctbox{opacity: .4;transition: all 0.2s ease-in-out;filter: grayscale(0.6);}
+.s3_box2.show .s3_ctbox,.s3_box1.show .s3_ctbox{filter: none;opacity: 1;}
+
+.part4{margin: 3.8rem auto 0;height: 14.9rem;width: 19.2rem;transform: scale(0.84);transform-origin: 50% 0;}
+.s4_tit{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/s4_tit2.png) no-repeat 50% 0;background-size: 17.91rem auto;width: 17.91rem;height: 2.35rem;}
+.s4_tit span{color: #2362af;}
+.s4_box{display: flex;justify-content: space-between;align-items: center;margin: 1.5rem auto 0;}
+.s4_item{width:7.7rem;}
+.s4_sub{display: flex;justify-content: flex-start;align-items: center;font-size: 0.6rem;color: #191919;line-height: 0.8rem;}
+.s4_sub i{width: 0.52rem;height: 0.53rem;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/icon.png) no-repeat 0 0;background-size: 100% auto;margin-right: 0.3rem;}
+.s4_pic{position: relative;margin: 0.5rem auto 0;}
+.s4_pic img{display: block;width: 100%;}
+.s4_pic i{width: 7.55rem;height: 9.61rem;position: absolute;background: #ecf3fa;opacity: 0;top: 0.08rem;left: 50%;transform:translateX(-50%);transition: all 0.2s ease-in-out;}
+
+
+.admin-overlay,.password-overlay,.unlocked-overlay{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp3.jpg) no-repeat 50% 50%;background-size: cover;width: 100vw;height: 100vh;z-index: 9999;position: fixed;top: 0;left: 0;display: none;}
+.login-box,.password-box,.unlocked-box{width: 7.92rem;padding: 0.4rem 0 1rem;background: #ffffff;border-radius: 0.2rem;box-shadow: 0 0 0.5rem rgba(133, 150, 170,0.5);position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);}
+.login-logo{display: block;width: 1.71rem;height:2.45rem;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/logo1.png) no-repeat 50% 0;background-size: 100% auto;margin: 0 auto;}
+.login-txt{display: flex;justify-content: space-between;align-items: center;margin: 0.28rem auto 0.28rem;font-size: 0.22rem;color: #494949;text-align: center;line-height: 0.5rem;}
+.login-txt i{width:2.3rem;height: 0.02rem;background: #d3d3d3;}
+
+.form-group{margin: 0 auto 0.24rem;width:6.7rem;}
+.form-group label{font-size: 0.28rem;color: #494949;line-height: 0.5rem;margin-bottom: 0.16rem;display: block;font-family: 'fzltzh';}
+.form-group input{width: 6.7rem;height:0.98rem;border: 0.02rem solid #d0d0d0;border-radius: 0.1rem;padding: 0.1rem 0.3rem;margin: 0 auto;display: block;background: #efefef;font-size: 0.3rem;color: #555555;}
+
+.login-btn{display: block;margin: 0.6rem auto 0;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn3.png) no-repeat 50% 0;background-size: 100% auto;width: 4.11rem;height:0.95rem;background-size: 100% auto;font-size: 0.3428rem;color: #ffffff;text-align: center;line-height: 0.44rem;transition: all 0.2s ease-in-out;display: flex;justify-content: center;align-items: center;flex-direction: column;}
+.login-btn span{display: block;font-size: 0.14rem;text-transform: uppercase;line-height: 0.2rem;}
+.login-btn:hover{filter: brightness(1.1) drop-shadow(0 0.02rem 0.1rem #c6c7cb);}
+.login-error{font-size: 0.26rem;color: #ff0000;text-align: center;line-height: 0.5rem;margin: 0.3rem auto 0;position: absolute;width: 100%;left: 0;bottom: 0.4rem;display: none;animation: headShake 1s linear;}
+@keyframes headShake{0%{-webkit-transform:translateX(0);transform:translateX(0)}6.5%{-webkit-transform:translateX(-6px) rotateY(-9deg);transform:translateX(-6px) rotateY(-9deg)}18.5%{-webkit-transform:translateX(5px) rotateY(7deg);transform:translateX(5px) rotateY(7deg)}31.5%{-webkit-transform:translateX(-3px) rotateY(-5deg);transform:translateX(-3px) rotateY(-5deg)}43.5%{-webkit-transform:translateX(2px) rotateY(3deg);transform:translateX(2px) rotateY(3deg)}50%{-webkit-transform:translateX(0);transform:translateX(0)}}
+
+.folder-box,.doc-picbox{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp4.jpg) no-repeat 50% 0 fixed;background-size: cover;width: 100vw;height: 100vh;z-index: 9999;position: fixed;top: 0;left: 0;overflow: hidden auto;display: none;}
+.folder-title,.doc-title{position: absolute;top: 0;left: 0;height: 2.8rem;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp4.jpg) no-repeat 50% 0 fixed;background-size: 100% auto;z-index: 10;width: 100%;}
+.folder-tit{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/title1.png) no-repeat 50% 50%;background-size: 38.4rem auto;width: 100%;height: 100%;font-size: 0;}
+.folder-logout{position: absolute;top: 1.12rem;right: 1.26rem;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn4.png) no-repeat 50% 0;background-size: 100% auto;width: 4.52rem;height: 0.97rem;font-size: 0.36rem;color: #5894de;text-align: center;line-height: 0.96rem;font-family: 'fzltzh';transition: all 0.2s ease-in-out;}
+.folder-logout:hover{filter: brightness(1.1);box-shadow: 0 0.02rem 0.2rem #85b1e7;}
+
+.folder-lnav{position: fixed;left: 0.88rem;top: 50%;transform: translateY(-45%);}
+.folder-lnav a{display: flex;font-size: 0.3rem;color: #79797e;justify-content: flex-start;align-items: center;line-height: 0.4rem;margin-bottom: 0.46rem;transition: all 0.2s ease-in-out;}
+.folder-lnav a i{width: 0.06rem;height: 0.65rem;background: #79797e;opacity: 0.3;border-radius: 0.06rem;margin-right: 0.62rem;transition: all 0.2s ease-in-out;border-radius: 0.03rem;}
+.folder-lnav a.on{font-family: 'fzltzh';color: #3c7fd2;font-size: 0.38rem;line-height: 0.48rem;}
+.folder-lnav a.on i{background: #038aff;opacity: 1;height: 1.35rem;}
+
+.folder-content,.doc-content{padding-top: 3.08rem;}
+.folder-ct,.doc-ct{width:17.74rem;display: flex;justify-content: flex-start;align-items: flex-start;flex-wrap: wrap;margin: 0 auto;}
+.folder-ct a,.doc-ct a{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/bg2.png) no-repeat 50% 0;background-size: 100% auto;width: 5.4rem;height: 4.2rem;margin: 0 0.25rem 0.5rem;border-radius: 0.1rem;box-shadow: 0 0 0.3rem rgba(175, 193, 214,0.3);display: flex;justify-content: center;align-items: center;flex-direction: column;transition: all 0.2s ease-in-out;}
+.folder-ct a:hover,.doc-ct a:hover{transform: translateY(-0.1rem);box-shadow: 0 0.2rem 0.3rem rgba(175, 193, 214,0.8);}
+.folder-ct a img,.doc-ct a img{display: block;width: 1.44rem;margin: 0 auto;}
+.folder-name{font-size: 0.34rem;color: #494949;text-align: center;line-height: 0.42rem;font-family: 'fzltzh';margin: 0.26rem auto 0;}   
+.suo-txt1,.suo-txt2{display: flex;justify-content: center;align-items: center;font-size: 0.26rem;color: #9fb0cb;text-align: center;line-height: 0.34rem;margin: 0.2rem auto 0;}
+.suo-txt1 i,.suo-txt2 i{width: 0.21rem;height: 0.3rem;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder_icon1.png) no-repeat 50% 0;background-size: 100% auto;margin-right: 0.2rem;}
+.suo-txt2 i{background-image: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder_icon2.png);}
+.suo-txt2{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder_btn1.png) no-repeat 50% 0;background-size: 100% auto;width: 2.87rem;height: 0.68rem;color: #ffffff;font-family: 'fzltzh';}
+
+.doc-tit{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/tit_bg1.png) no-repeat 50% 50%;background-size: 38.4rem auto;width: 100%;height: 100%;font-size: 0.6rem;color: #403f3f;text-align: center;line-height: 2.8rem;font-family: 'fzltth';display: flex;justify-content: center;align-items: center;}
+.doc-back{position: absolute;top: 1rem;right: 2.1rem;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn5.png) no-repeat 50% 0;background-size: 100% auto;width: 2.92rem;height: 0.97rem;font-size: 0.36rem;color: #5894de;text-align: center;line-height: 0.96rem;font-family: 'fzltzh';transition: all 0.2s ease-in-out;}
+.doc-back:hover{filter: brightness(1.1);box-shadow: 0 0.02rem 0.2rem #85b1e7;}
+
+.doc-ct{width: 12.2rem;}
+.doc-ct a{margin: 0 0.32rem 0.5rem;}
+.doc-ct a i{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc1.png) no-repeat 50% 0;background-size: 100% auto;width: 1.42rem;height: 1.72rem;margin: 0 auto;display: block;}
+.doc-ct a.doc-suo i{background-image: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc2.png);}
+.doc-ct a img{width: 4.22rem;height: 2.38rem;object-fit: cover;}
+.doc-name{font-size: 0.3rem;color: #494949;text-align: center;line-height: 0.4rem;margin: 0.4rem auto 0;}
+
+.doc-text{width: 26.26rem;padding: 0.58rem 1.06rem;margin: 0 auto 1rem;background: #ffffff;border-radius: 0.2rem;box-shadow: 0 0 0.3rem rgba(175, 193, 214,0.3);}
+.doc-text h2{font-size: 0.4rem;color: #202020;text-align: left;line-height: 0.5rem;font-family: 'fzltzh';margin: 0.46rem auto 0;}
+.doc-text h3{border-top: 1px solid #c5daec;height: 1rem;display: flex;justify-content: flex-start;align-items: center;font-size: 0.36rem;color: #202020;text-align: left;line-height: 0.46rem;font-family: 'fzltzh';margin: 0.3rem auto 0;padding-top: 0.3rem;}
+.doc-text h3:first-child{border-top: none;}
+.doc-text h2+h3{border-top: none;}
+.doc-text h3 i{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc_icon2.png) no-repeat 50% 0;background-size: 100% auto;width: 0.15rem;height: 0.4rem;margin-right: 0.2rem;}
+.doc-text p,.doc-text ul{font-size: 0.26rem;color: #6d7888;text-align: left;line-height: 0.46rem;margin: 0.2rem auto 0;width: 23.3rem;}
+.doc-text img{display: block;width: 100%;}
+.doc-table{width: 24.1rem;margin: 0.44rem auto 0;background: #fafdff;font-size: 0.3rem;color: #494949;text-align: left;line-height: 0.4rem;}
+.doc-table th{height: 1.1rem;color: #2362af;font-family: 'fzltzh';background: #eff8ff;padding: 0 0.88rem;}
+.doc-table td{padding: 0 0.88rem;height: 1.1rem;}
+ .doc-table td:first-child{width: 35%;}
+/*.doc-table td:last-child{width:15%;} */
+.col1{color: #20c75e;}
+.col2{color: #dd7d0b;}
+.col3{color: #e61a29;}
+.doc-text ul li{font-size: 0.26rem;color: #6d7888;text-align: left;line-height: 0.62rem;position: relative;}
+.doc-text ul li::after{position: absolute;top: 50%;left: -0.32rem;width: 0.1rem;height: 0.1rem;background: #2362af;border-radius: 50%;transform: translateY(-50%);content: '';}
+
+.doc-picct{width: 30.48rem;height: 96%;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);}
+.doc-picct img{width: 100%;height: calc(100% - 1.3rem);object-fit: contain;}
+.pic-name{height: 1.1rem;display: flex;justify-content: flex-start;align-items: center;font-size: 0.3rem;color: #494949;line-height: 0.4rem;text-align: left;}
+.pic-name i{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc_icon1.png) no-repeat 50% 0;background-size: 100% auto;width: 0.45rem;height: 0.45rem;margin-right: 0.2rem;}
+
+.doc-close{position: absolute;top: 0.4rem;right: 0;width: 0.52rem;height: 0.52rem;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc_close.png) no-repeat 50% 0;background-size: 100% auto;}
+.btn-down{position: absolute;top: 0.36rem;right: 0.8rem;width: 0.8rem;height: 0.57rem;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/down.png) no-repeat 50% 0;background-size: 100% auto;}
+
+
+
+.password-overlay,.unlocked-overlay{background: rgba(0, 0, 0, 0.5);}
+.password-box{padding-top: 0.6rem;}
+.password-suo{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder_icon3.png) no-repeat 50% 0;background-size: 100% auto;width: 0.87rem;height: 1.2rem;margin: 0 auto;display: block;}
+.password-tit{font-size: 0.5rem;color: #494949;text-align: center;line-height: 0.6rem;margin: 0.4rem auto 0;font-family: 'fzlttzh';}
+.password-desc{font-size: 0.3rem;color: #858484;text-align: center;line-height: 0.4rem;margin: 0.2rem auto 0;font-family: 'fzlttzh';}
+
+.password-btn{display: flex;justify-content: space-between;align-items: center;margin: 0.52rem auto 0;width: 6.7rem;}
+.password-btn a{font-size: 0.28rem;color: #ffffff;border-radius: 0.05rem;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn6.png) no-repeat 50% 0;background-size: 6.7rem auto;width: 3.22rem;height: 1.04rem;text-align: center;line-height: 1.04rem;transition: all 0.2s ease-in-out;}
+.password-btn a:hover{filter: brightness(1.1);box-shadow: 0 0.02rem 0.1rem #afc1d6;}
+.password-btn a.password-btn-lock{background-position: 0 0;}
+.password-btn a.password-btn-cancel{background-position: -3.48rem 0;color: #436b9b;}
+
+.unlocked-close{position: absolute;width: 100%;height: 100%;top: 0;left: 0;}
+.unlocked-box{padding: 1.3rem 0;width: 11.98rem;}
+.unlocked-suo{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/suo.png) no-repeat 50% 0;background-size: 100% auto;width: 0.87rem;height: 1.2rem;margin: 0 auto;display: block;}
+.unlocked-tit{font-size: 0.5rem;color: #494949;text-align: center;line-height: 0.7rem;margin: 0.3rem auto 0;font-family: 'fzltzh';text-transform: uppercase;}
+.unlocked-desc{font-size: 0.3rem;color: #858484;text-align: center;line-height: 0.4rem;margin: 0.1rem auto 0;font-family: 'fzltzh';}
+
+.bgm{width: 0.76rem;height: 0.75rem;background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/bgm.png) no-repeat 50% 0;position: fixed;top: 0.77rem;right: 1.14rem;animation: bgm 5s linear infinite;animation-play-state: paused;z-index: 12;background-size: 100% auto;}
+.bgm:after{background: url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/bgm_close.png) no-repeat 50% 0;background-size: 100% auto;position: absolute;top: 0;left: 0;width: 100%;height: 100%;display: block;content: '';}
+.music_on{animation-play-state: running;}
+.music_on:after{display: none;}
+
+
+@keyframes bgm{
+	from{transform: rotate(0);}
+	to{transform: rotate(360deg);}
+}
+
+.toRight,
+.toRightSmall,
+.toLeft,
+.toLeftSmall,
+.toBottom,
+.toBottomSmall,
+.toTop,
+.toTopSmall,
+.scaleIn {
+    transition: all .6s;
+    opacity: 0;
+}
+
+.toRight {
+    transform: translate3d(-10rem, 0, 0);
+}
+
+.toRightSmall {
+    transform: translate3d(-2rem, 0, 0);
+}
+
+.toLeft {
+    transform: translate3d(10rem, 0, 0);
+}
+
+.toLeftSmall {
+    transform: translate3d(2rem, 0, 0);
+}
+
+.toBottom {
+    transform: translate3d(0, -10rem, 0);
+}
+
+.toBottomSmall {
+    transform: translate3d(0, -2rem, 0);
+}
+
+.toTop {
+    transform: translate3d(0, 10rem, 0);
+}
+
+.toTopSmall {
+    transform: translate3d(0, 2rem, 0);
+}
+
+.part{pointer-events: none;}
+.part.show{pointer-events: all;}
+.part.show .toRight,
+.part.show .toRightSmall,
+.part.show .toLeft,
+.part.show .toLeftSmall,
+.part.show .toBottom,
+.part.show .toBottomSmall,
+.part.show .toTop,
+.part.show .toTopSmall {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+}
+/*transition delay*/
+.part.show .delay1 {
+    transition-delay: .1s;
+}
+
+.part.show .delay2 {
+    transition-delay: .2s;
+}
+
+.part.show .delay3 {
+    transition-delay: .3s;
+}
+
+.part.show .delay4 {
+    transition-delay: .4s;
+}
+
+.login-box,.password-box{animation: loginanim 0.5s ease-in-out;}
+
+@keyframes loginanim {
+    0% {
+        transform: translate(-50%,-40%);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(-50%,-50%);
+        opacity: 1;
+    }
+}
+.folder-lnav{animation: navnanim 0.5s ease-in-out;}
+@keyframes navnanim {
+    0% {
+        transform: translate(-2rem,-45%);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(0,-45%);
+        opacity: 1;
+    }
+}
+.folder-content{animation: contentanim 0.5s ease-in-out;}
+@keyframes contentanim {
+    0% {
+        transform: translateY(-1rem);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

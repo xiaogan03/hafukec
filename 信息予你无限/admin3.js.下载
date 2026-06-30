@@ -1,0 +1,381 @@
+$(function () {
+    // ==================== 全局变量 ====================
+    let loginUser = '';
+    let loginPass = '';
+    let currentFolderId = '';
+    let currentFolderPassword = '';
+    let currentDocId = '';
+    let currentDocPassword = '';
+    let passwordTarget = '';      // 'folder' | 'doc'
+    let passwordTargetId = '';
+    let passwordTargetName = '';
+
+    const apiBase = 'https://dfx-back.7jing.com/api_260626.php';
+
+    // ==================== 初始化 ====================
+    $('#adminOverlay').show();
+    $('#folderOverlay').hide();
+    $('#passwordOverlay').hide();
+
+    // ==================== 工具函数 ====================
+    function authParams() {
+        var fp = currentFolderPassword ? '&folder_password=' + encodeURIComponent(currentFolderPassword) : '';
+        var dp = currentDocPassword ? '&doc_password=' + encodeURIComponent(currentDocPassword) : '';
+        return '&username=' + encodeURIComponent(loginUser) + '&password=' + encodeURIComponent(loginPass) + fp + dp;
+    }
+
+    function showPage(page) {
+        if (page === 'login') {
+            $('#adminOverlay').show();
+            $('#folderOverlay').hide();
+        } else {
+            $('#adminOverlay').hide();
+            $('#folderOverlay').show();
+            $('#folder-content').toggle(page === 'folder');
+            $('#doc-list').toggle(page === 'doc_list');
+            $('#doc-detail').toggle(page === 'doc_detail');
+        }
+    }
+
+    function showPasswordError() {
+        $('#passwordOverlay .login-error').show();
+        $('#password1').prop('disabled', true);
+        $('.password-btn-lock').css('pointer-events', 'none');
+        var countDown = 5;
+        $('#passwordOverlay .login-error').html('⚠ <span class="pwd-err">密码错误，' + countDown + '秒后可重新输入</span>');
+        var timer = setInterval(function () {
+            countDown--;
+            if (countDown > 0) {
+                $('#passwordOverlay .login-error').html('⚠ <span class="pwd-err">密码错误，' + countDown + '秒后可重新输入</span>');
+            } else {
+                clearInterval(timer);
+                $('#passwordOverlay .login-error').hide();
+                $('#password1').prop('disabled', false);
+                $('#password1').val('');
+                $('.password-btn-lock').css('pointer-events', 'auto');
+            }
+        }, 1000);
+    }
+
+    function handleAuthError(res) {
+        if (res.code === 403) {
+            alert('未授权，请重新登录');
+            showPage('login');
+        }
+    }
+
+    // ==================== 数据加载 ====================
+    function loadFolders() {
+        $.getJSON(apiBase + '?type=folders' + authParams(), function (res) {
+            if (res.code === 0) {
+                renderFolders(res.data);
+            } else {
+                handleAuthError(res);
+            }
+        });
+    }
+
+    function loadDocuments(folderId) {
+        currentFolderId = folderId;
+        
+        $.getJSON(apiBase + '?type=documents&folder_id=' + encodeURIComponent(folderId) + authParams(), function (res) {
+        if (res.code === 0) {
+            var folderName = $('#folder-ct a[data-folder="' + folderId + '"]').data('name') || '';
+            $('#doc-list-title').text(folderName);
+            renderDocuments(res.data);
+            showPage('doc_list');
+            $('#passwordOverlay').hide();
+            $('#password1').val('');
+            $('#passwordOverlay .login-error').hide();
+        } else if (res.code === 8001) {
+                $('.pwd-err').text(res.msg)
+                $('#passwordOverlay .login-error').show();
+                $('#password1').prop('disabled', true);
+
+                setTimeout(function(){
+                    $('#passwordOverlay .login-error').hide();
+                    $('#password1').prop('disabled', false);
+                    $('#password1').val('');
+                },3000)
+                currentFolderPassword = '';
+            }else if (res.code === 403) {
+                showPasswordError();
+                currentFolderPassword = '';
+            } else {
+                handleAuthError(res);
+            }
+        });
+    }
+
+    function loadDocumentDetail(docId) {
+        currentDocId = docId;
+        
+        $.getJSON(apiBase + '?type=document_detail&doc_id=' + encodeURIComponent(docId) + authParams(), function (res) {
+            if (res.code === 0 && res.data) {
+                $('#doc-detail-title').text(res.data.title);
+                $('#doc-detail-content').html(res.data.content);
+                showPage('doc_detail');
+            } else {
+                handleAuthError(res);
+            }
+        });
+    }
+
+    function verifyDocumentPassword(docId, password, callback) {
+        var auth = '&username=' + encodeURIComponent(loginUser) + '&password=' + encodeURIComponent(loginPass) + '&folder_password=' + encodeURIComponent(currentFolderPassword);
+        $.getJSON(apiBase + '?type=verify_document_password&doc_id=' + encodeURIComponent(docId) + '&doc_password=' + encodeURIComponent(password) + auth, function (res) {
+            if (callback) callback(res);
+        });
+    }
+
+    // ==================== 渲染 ====================
+    function renderFolders(list) {
+        var html = '';
+        list.forEach(function (item) {
+            var lockedClass = item.locked ? 'folder-suo' : '';
+            var lockedContent = item.locked ? 
+                '<p class="suo-txt1"><i></i><span>加密·需要访问密钥</span></p><p class="suo-txt2"><i></i><span>ENCRYPTED</span></p>' : '';
+            html += '<a href="javascript:;" data-folder="' + item.id + '" data-name="' + item.name + '" data-locked="' + (item.locked ? '1' : '0') + '" data-password="' + (item.password || '') + '" data-maxlength="' + (item.maxlength || '') + '" class="' + lockedClass + '">' +
+                '<img src="' + item.icon + '" alt="">' +
+                '<p class="folder-name">' + item.name + '</p>' +
+                lockedContent +
+                '</a>';
+        });
+        $('#folder-ct').html(html);
+    }
+
+    function renderDocuments(list) {
+        var html = '';
+        list.forEach(function (item) {
+            var docClass = item.locked ? 'doc-suo' : (item.type === 'image' ? 'doc-pic' : '');
+            var docContent = '';
+            if (item.type === 'image') {
+                if (item.locked) {
+                    docContent = '<i></i><p class="doc-name">' + item.name + '</p>';
+                } else {
+                    docContent = '<img src="' + item.src + '" alt=""><p class="doc-name">' + item.name + '</p>';
+                }
+            } else {
+                docContent = '<i></i><p class="doc-name">' + item.name + '</p>';
+            }
+            html += '<a href="javascript:;" data-doc="' + item.id + '" data-name="' + item.name + '" data-locked="' + (item.locked ? '1' : '0') + '" data-password="' + (item.password || '') + '" data-maxlength="' + (item.maxlength || '') + '" data-type="' + (item.type || '') + '" data-src="' + (item.src || '') + '" class="' + docClass + '">' + docContent + '</a>';
+        });
+        $('#doc-list-content').html(html);
+    }
+
+    // ==================== 事件绑定 ====================
+    // 登录
+    $('#login').off('click').on('click', function () {
+        var username = $('#username').val();
+        var password = $('#password').val();
+        
+        $.post(apiBase + '?type=login', { username: username, password: password }, function (res) {
+            if (res.code === 0) {
+                loginUser = username;
+                loginPass = password;
+                loadFolders();
+                showPage('folder');
+            } else {
+                if(res.code == 8001){
+                    $('.admin-login-err').text(res.msg)
+                }else{
+                    $('.admin-login-err').text('用户名或密码错误，请重新输入')
+                }
+                $('#adminOverlay .login-error').show();
+                $('#login').css('pointer-events', 'none');
+                setTimeout(function () {
+                    $('#adminOverlay .login-error').hide();
+                    $('#login').css('pointer-events', 'auto');
+                }, 5000);
+            }
+        }, 'json');
+    });
+
+    // 退出
+    $('.folder-logout').click(function () {
+        loginUser = '';
+        loginPass = '';
+        currentFolderId = '';
+        currentFolderPassword = '';
+        currentDocId = '';
+        currentDocPassword = '';
+        $('#username').val('');
+        $('#password').val('');
+        showPage('login');
+    });
+
+    // 点击目录
+    $(document).on('click', '#folder-ct a', function () {
+        var folderId = $(this).data('folder');
+        var folderName = $(this).data('name');
+        var isLocked = String($(this).data('locked')) === '1';
+        var maxlength = $(this).data('maxlength') || 6;
+
+        if (isLocked) {
+            passwordTarget = 'folder';
+            passwordTargetId = folderId;
+            passwordTargetName = folderName;
+            $('#pass-title').text(folderName);
+//          $('#password1').attr('maxlength', maxlength);
+            $('#passwordOverlay').show();
+        } else {
+            currentFolderPassword = '';
+            loadDocuments(folderId);
+        }
+    });
+
+    // 点击文档
+    $(document).on('click', '#doc-list-content a', function () {
+        var docId = $(this).data('doc');
+        var docName = $(this).data('name');
+        var isLocked = String($(this).data('locked')) === '1';
+        var maxlength = $(this).data('maxlength') || 6;
+        var docType = $(this).data('type') || '';
+
+        if (isLocked) {
+            passwordTarget = 'doc';
+            passwordTargetId = docId;
+            passwordTargetName = docName;
+            $('#pass-title').text(docName);
+//          $('#password1').attr('maxlength', maxlength);
+            $('#passwordOverlay').show();
+        } else if (docType === 'image') {
+            var src = $(this).find('img').attr('src');
+            if (src) {
+                $('#doc-picbox img').attr('src', src);
+                var pureSrc = src.split('?')[0].split('#')[0];
+                var suffix = pureSrc.split('.').pop();
+                $('#doc-picbox .pic-name span').text(docName + '.' + suffix);
+                $('#doc-picbox').show();
+            }
+        } else {
+            currentDocPassword = '';
+            loadDocumentDetail(docId);
+        }
+    });
+
+    // 列表页返回
+    $('#doc-list-back').click(function () {
+        showPage('folder');
+        currentFolderId = '';
+        currentFolderPassword = '';
+    });
+
+    // 详情页返回
+    $('#doc-detail-back').click(function () {
+        showPage('doc_list');
+        currentDocId = '';
+        currentDocPassword = '';
+    });
+
+    // 密码弹窗解锁
+    $('.password-btn-lock').off('click').on('click', function () {
+        var password1 = $('#password1').val();
+        if(isEmpty(password1)){
+            return;
+        }
+        if (passwordTarget === 'folder') {
+            currentFolderPassword = password1;
+            loadDocuments(passwordTargetId);
+        } else if (passwordTarget === 'doc') {
+            verifyDocumentPassword(passwordTargetId, password1, function (res) {
+                if (res.code === 0) {
+                    $('#passwordOverlay').hide();
+                    $('#password1').val('');
+                    $('#passwordOverlay .login-error').hide();
+                    
+                    var $doc = $('#doc-list-content a[data-doc="' + passwordTargetId + '"]');
+                    var docType = $doc.data('type') || '';
+                    
+                    if (docType === 'image') {
+                        var src = res.data;
+                        if (src) {
+                            $('#doc-picbox img').attr('src', src);
+                            var pureSrc = src.split('?')[0].split('#')[0];
+                            var suffix = pureSrc.split('.').pop();
+                            $('#doc-picbox .pic-name span').text($doc.data('name') + '.' + suffix);
+                            $('#doc-picbox').show();
+                        }
+                    } else {
+                        currentDocPassword = password1;
+                        loadDocumentDetail(passwordTargetId);
+                    }
+                } else {
+                    if(res.code == 8001){
+                        $('.pwd-err').text(res.msg)
+                        $('#passwordOverlay .login-error').show();
+                        $('#password1').prop('disabled', true);
+                        $('.password-btn-lock').css('pointer-events', 'none');
+                        setTimeout(function(){
+                            $('#passwordOverlay .login-error').hide();
+                            $('#password1').prop('disabled', false);
+                            $('#password1').val('');
+                            $('.password-btn-lock').css('pointer-events', 'auto');
+                        },3000)
+                    }else{
+                        showPasswordError();
+                    }
+                }
+            });
+        }
+    });
+
+    // 密码弹窗取消
+    $('.password-btn-cancel').off('click').on('click', function () {
+        $('#passwordOverlay').hide();
+        $('#password1').val('');
+        $('#passwordOverlay .login-error').hide();
+        passwordTarget = '';
+        passwordTargetId = '';
+    });
+
+    // 图片弹窗关闭
+    $('#doc-picbox .doc-close').click(function () {
+        $('#doc-picbox').hide();
+    });
+
+    // 图片下载
+    $('#doc-picbox .btn-down').click(async function () {
+        var src = $('#doc-picbox img').attr('src');
+        if (!src) return;
+        try {
+            var res = await fetch(src, { mode: 'cors' });
+            var blob = await res.blob();
+            var blobUrl = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = $('#doc-picbox .pic-name span').text() || '';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(blobUrl);
+        } catch (err) {
+            alert('图片下载失败，请长按图片另存为');
+        }
+    });
+
+    function isEmpty(value) {
+        // 1. 处理 null 或 undefined
+        if (value == null) return true;
+
+        // 2. 处理布尔值和数字（通常 0 和 false 不被视为空，根据业务需求可调整）
+        if (typeof value === 'boolean' || typeof value === 'number') return false;
+
+        // 3. 处理字符串（包含纯空格的情况）
+        if (typeof value === 'string') return value.trim() === '';
+
+        // 4. 处理数组
+        if (Array.isArray(value)) return value.length === 0;
+
+        // 5. 处理 Map 和 Set 集合
+        if (value instanceof Map || value instanceof Set) return value.size === 0;
+
+        // 6. 处理普通对象（排除 Date, RegExp 等特殊对象）
+        if (Object.prototype.toString.call(value) === '[object Object]') {
+            return Object.keys(value).length === 0;
+        }
+
+        // 其他类型（如 Function）默认不为空
+        return false;
+    }
+});
