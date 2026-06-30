@@ -1,0 +1,123 @@
+{
+  "login": {
+    "username": "111",
+    "password": "111"
+  },
+  "folderIcon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png",
+  "folderIconLocked": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder2.png",
+  "folders": [
+    { "id": "accident", "name": "人员伤亡事故调查", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder2.png", "locked": true, "password": "123" },
+    { "id": "location", "name": "哈夫克分部选址报告", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png", "locked": false, "password": "" },
+    { "id": "nuclear", "name": "核电招聘部", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png", "locked": false, "password": "" },
+    { "id": "alpha", "name": "脑机α原型机", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png", "locked": false, "password": "" },
+    { "id": "draft", "name": "草稿", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png", "locked": false, "password": "" },
+    { "id": "gunmod", "name": "改枪码", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png", "locked": false, "password": "" },
+    { "id": "thesis", "name": "毕业设计", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png", "locked": false, "password": "" }
+  ],
+  "documents": {
+    "thesis": [
+      {
+        "id": "thesis_main",
+        "name": "基于PWM的直流电机调速控制器设计",
+        "type": "text",
+        "locked": false,
+        "password": "",
+        "src": "",
+        "content": "<h2>基于PWM的直流电机调速控制器设计</h2><table class=\"doc-table\"><tr><th>项目</th><th>内容</th></tr><tr><td>学院</td><td>电子工程学院 / 自动化</td></tr><tr><td>学生</td><td>甘强 / 2262200116</td></tr><tr><td>指导教师</td><td>彭涛 / 工程师</td></tr><tr><td>类型</td><td>工程设计</td></tr></table><h3><i></i>摘要</h3><p>传统直流电机调速器大多运行在开环模式，缺乏转速反馈和电流保护。本设计以ARM Cortex-M4微控制器（STM32F411CEU6）为核心，用MOSFET H桥（TB6612）驱动直流减速电机（MG513），电机尾部GMR磁式编码器送回转速形成闭环，霍尔电流传感器（ACS712）实时监控绕组电流。</p><p>硬件按控制、驱动、检测、交互四层搭在自制PCB底板上。软件方面：通用定时器输出50kHz PWM载波；编码器接口直接读A/B正交脉冲并做4倍频加32位软件扩展；位置式PID每100ms算一次更新占空比；电流采样走DMA循环缓冲加32点均值滤波。过流阈值0.7A，堵转判定要求占空比>15%、转速<10RPM且持续600ms才触发。</p><p>人机交互：EC11旋转编码器以5RPM步进调速；6个按键管启停、模式切换和三档预设转速（100/200/300RPM）；OLED四行显示占空比、设定转速、实测转速和电流值。</p><h3><i></i>系统架构</h3><table class=\"doc-table\"><tr><th>层级</th><th>器件</th><th>功能</th></tr><tr><td>控制层</td><td>STM32F411CEU6</td><td>PWM输出、编码器采集、PID计算、故障逻辑</td></tr><tr><td>驱动层</td><td>TB6612 MOSFET H桥</td><td>驱动MG513直流减速电机</td></tr><tr><td>检测层</td><td>GMR编码器 + ACS712</td><td>转速反馈 + 电流采样</td></tr><tr><td>交互层</td><td>OLED + EC11旋钮 + 按键 + LED</td><td>显示、调速、操作、报警</td></tr></table><h3><i></i>关键技术参数</h3><table class=\"doc-table\"><tr><th>参数</th><th>数值</th></tr><tr><td>PWM载波频率</td><td>50 kHz</td></tr><tr><td>PID控制周期</td><td>100 ms</td></tr><tr><td>PID参数</td><td>Kp=0.25, Ki=0.10, Kd=0.005</td></tr><tr><td>调速范围</td><td>0 ~ 300 RPM</td></tr><tr><td>稳态误差</td><td class=\"col1\">≤ 1.5%</td></tr><tr><td>过流保护阈值</td><td>0.7 A</td></tr><tr><td>堵转判定延迟</td><td>600 ms</td></tr><tr><td>调速步进</td><td>5 RPM</td></tr><tr><td>预设档位</td><td>100 / 200 / 300 RPM</td></tr></table><h3><i></i>三重安全保护</h3><table class=\"doc-table\"><tr><th>保护类型</th><th>触发条件</th><th>测试结果</th></tr><tr><td>过流保护</td><td>绕组电流 ≥ 0.7A</td><td class=\"col1\">10/10 触发成功</td></tr><tr><td>堵转保护</td><td>占空比>15% + 转速<10RPM + 持续600ms</td><td class=\"col1\">10/10 触发成功</td></tr><tr><td>ADC饱和保护</td><td>ADC采样值达到上限（检测开路故障）</td><td class=\"col1\">10/10 触发成功</td></tr></table><h3><i></i>结论</h3><p>本设计实现了从硬件搭建到软件实现、从开环驱动到闭环控制的完整工程闭环。0~300RPM区间稳态误差不超过1.5%；过流、堵转、ADC饱和三项保护各测10次全部触发成功，无一误报。方案把感知、控制和保护做进了一个闭环里，对教学实验和小型自动化设备有直接参考意义。</p>"
+      }
+    ],
+    "gunmod": [
+      {
+        "id": "gunmod_codes",
+        "name": "改枪码",
+        "type": "text",
+        "locked": false,
+        "password": "",
+        "src": "",
+        "content": "<h2>改枪码</h2><h3><i></i>烽火地带</h3><table class=\"doc-table\"><tr><th>武器</th><th>改枪码</th></tr><tr><td>MK47突击步枪</td><td class=\"copy-code\">6K4D6JC04OC2K0IAVBQIK</td></tr><tr><td>K416突击步枪</td><td class=\"copy-code\">6K4D70K04OC2K0IAVBQIK</td></tr><tr><td>AS Val突击步枪</td><td class=\"copy-code\">6K4D6QS04OC2K0IAVBQIK</td></tr><tr><td>M7战斗步枪</td><td class=\"copy-code\">6K4D6TO04OC2K0IAVBQIK</td></tr><tr><td>M7战斗步枪</td><td class=\"copy-code\">6K4D6UC04OC2K0IAVBQIK</td></tr><tr><td>MK4冲锋枪</td><td class=\"copy-code\">6K4D74C04OC2K0IAVBQIK</td></tr><tr><td>MK4冲锋枪</td><td class=\"copy-code\">6K4D74S04OC2K0IAVBQIK</td></tr><tr><td>M700狙击步枪</td><td class=\"copy-code\">6K4D7CK04OC2K0IAVBQIK</td></tr><tr><td>M700狙击步枪</td><td class=\"copy-code\">6K4D7DC04OC2K0IAVBQIK</td></tr><tr><td>M700狙击步枪</td><td class=\"copy-code\">6K4D7DO04OC2K0IAVBQIK</td></tr><tr><td>M14射手步枪</td><td class=\"copy-code\">6KEAQH404OC2K0IAVBQIK</td></tr><tr><td>M14射手步枪</td><td class=\"copy-code\">6KEAQF804OC2K0IAVBQIK</td></tr><tr><td>M14射手步枪</td><td class=\"copy-code\">6KEAQFS04OC2K0IAVBQIK</td></tr></table>"
+      }
+    ],
+    "accident": [
+      {
+        "id": "accident_report",
+        "name": "事故调查报告",
+        "type": "text",
+        "locked": true,
+        "password": "123",
+        "src": "",
+        "content": "<h2>现场异常人员受伤及昏迷事故调查报告</h2><table class=\"doc-table\"><tr><th>项目</th><th>内容</th></tr><tr><td>编制部门</td><td>安保部/事故调查组</td></tr><tr><td>事故时间</td><td>4月16日</td></tr><tr><td>事故地点</td><td>AZ3防护围栏外侧，区域草堆</td></tr></table><h3><i></i>一、事故概述</h3><p>哈夫克雇员在AZ3防护围栏外侧草堆中被巡视人员发现，处于深度昏迷状态。伤者已移交医疗机构进行紧急救治。</p><h3><i></i>二、伤情记录</h3><table class=\"doc-table\"><tr><th>检查项目</th><th>检查结果</th></tr><tr><td>意识状态</td><td>深度昏迷，对强光及痛觉刺激无明显反应</td></tr><tr><td>呼吸情况</td><td>微弱，尚存</td></tr><tr><td>体表创伤</td><td>躯干及四肢多处不规则创口，部分渗血已凝固</td></tr><tr><td>着装状况</td><td>衣物多处破损、拉扯，附着大量泥土、草屑及植物碎叶</td></tr></table><h3><i></i>三、现场勘验</h3><table class=\"doc-table\"><tr><th>勘验项目</th><th>勘验结果</th></tr><tr><td>坠落痕迹</td><td>草堆有人体砸压及翻滚痕迹，草皮呈不规则倒伏状；推测伤者从上方山坡坠落，草堆起缓冲作用</td></tr><tr><td>动物痕迹</td><td>事发地周围发现动物毛发及脚印，初步判断为犬类</td></tr><tr><td>人类活动痕迹</td><td>周边区域发现人类活动迹象</td></tr><tr><td>围栏状态</td><td>围栏顶部防攀爬设施存在局部损坏，有衣物纤维残留及血迹斑点</td></tr></table><h3><i></i>四、初步原因分析</h3><p>综合现场客观证据，初步判断：伤者在围栏外侧遭到追逐，在逃跑过程中坠下山坡，因撞击或震荡导致昏迷。周边发现的犬类毛发及脚印表明追逐来源可能为犬只；人类活动痕迹的存在不排除有人员牵涉其中。具体定性需待进一步调查确认。</p><h3><i></i>五、后续工作</h3><ul><li>调取事发时段周边监控记录</li><li>对犬类毛发及脚印进行物种鉴定</li><li>排查周边人类活动痕迹来源</li><li>待伤者苏醒后进行问询</li></ul>"
+      },
+      {
+        "id": "accident_diary",
+        "name": "工作个人日记",
+        "type": "text",
+        "locked": false,
+        "password": "",
+        "src": "",
+        "content": "<h2><span>【私密文件-代号C】</span></h2><p>雇员编号：089376423<br>岗位：设施外围巡逻组</p><h3><i></i><span>4月13日 | 天气：阴 | 夜班</span></h3><p>今晚的外围巡视极其压抑，连虫鸣声都听不见。<br>凌晨一点左右，我巡查到北侧监控盲区那片林地边缘。就在手电筒光束扫过灌木丛的瞬间，我发誓我看到了一双眼睛，而且那绝对不是普通野生动物瞳孔的反光，我能看出来它在观察我，甚至说在审视我。我停在原地足足一分钟没敢动弹，直到一阵冷风吹过来我才发现自己后背全被冷汗浸透了。</p><h3><i></i><span>4月14日 | 天气：晴 | 白班</span></h3><p>大白天的外围总算让人能喘口气。<br>下午巡逻到东侧河边水闸附近时，碰见一个陌生人，不知道他怎么越过监控网到附近的。我喊了一嗓子，他远远地还冲我招了招手。他手里举着带稳定器的微单相机，一边顺着河岸走一边对着镜头说话。我例行上去询问，毕竟这片荒郊野岭的，任何人都显得可疑。他解释自己是一名短视频UP主，来取景时迷了路，我查看了下他的账号：3707006600874797。没发现什么疑点，但我还是警告了他，让他离这片区域远点，毕竟如果是别的同事，他现在可能已经吃上枪子儿了。</p><h3><i></i><span>4月15日 | 天气：多云转阵雨 | 夜班</span></h3><p>它又来了。<br>今晚巡线到一半，那种被注视的强烈直觉再次出现。我猛地一转头，就在不到五十米外的树影深处，那双红色的眼睛再次死死锁定了我的位置。这一次我壮着胆子，立刻把战术手电调到最强档位，直接对着那个方向照了过去。<br>结果光柱打过去的瞬间，那双眼睛直接消失了。<br>也是在这一瞬间，我想起来了，白天值班的时候没发现的疑点。<br>他的视频里总是有一只灰白色的大狗，但看见他时，这只狗并不在他身边。<br>明天如果他还在附近出现，我必须抓住他问个明白。</p>"
+      }
+    ],
+    "location": [
+      {
+        "id": "location_report",
+        "name": "分部选址综合报告",
+        "type": "text",
+        "locked": false,
+        "password": "",
+        "src": "",
+        "content": "<h2>哈夫克分部选址综合报告</h2><h3><i></i>候选地点对比</h3><table class=\"doc-table\" ><tr><th>地点</th><th>地质稳定</th><th>供电保障</th><th>交通便利</th><th>综合评价</th></tr><tr><td>A区-山谷基地</td><td class=\"col1\">优</td><td class=\"col2\">中</td><td class=\"col3\">差</td><td>备选</td></tr><tr><td>B区-城郊工业园区</td><td class=\"col1\">优</td><td class=\"col1\">优</td><td class=\"col1\">优</td><td>推荐</td></tr><tr><td>C区-滨海试验场</td><td class=\"col2\">中</td><td class=\"col1\">优</td><td class=\"col2\">中</td><td>备选</td></tr></table><h3><i></i>推荐结论</h3><p>综合考量后推荐B区-城郊工业园区作为哈夫克分部首选地址。该区域基础设施完善，距离总部仅40分钟车程，且周边配套可满足500人规模运营需求。</p>"
+      },
+      {
+        "id": "location_map",
+        "name": "选址地图标注",
+        "type": "image",
+        "locked": false,
+        "password": "",
+        "src": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc_b1.jpg",
+        "content": ""
+      }
+    ],
+    "nuclear": [
+      {
+        "id": "nuclear_exam",
+        "name": "招聘考试试题",
+        "type": "text",
+        "locked": false,
+        "password": "",
+        "src": "",
+        "content": "<h2>核电招聘部 · 招聘考试试题</h2><h3><i></i>第一部分：基础知识</h3><p>1. 简述核电站的基本工作原理。</p><p>2. 核反应堆中控制棒的主要作用是什么？</p><p>3. 解释放射性半衰期的概念。</p><h3><i></i>第二部分：安全规范</h3><p>4. 列出核电站三级安全防护体系。</p><p>5. 在辐射超标区域工作时，ALARA原则具体指什么？</p><h3><i></i>第三部分：应急处理</h3><p>6. 描述一回路冷却剂泄漏事故的标准处置流程。</p>"
+      },
+      {
+        "id": "nuclear_poster",
+        "name": "招聘海报",
+        "type": "image",
+        "locked": false,
+        "password": "",
+        "src": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc_b2.jpg",
+        "content": ""
+      }
+    ],
+    "alpha": [
+      {
+        "id": "alpha_brain",
+        "name": "原型机技术文档",
+        "type": "text",
+        "locked": false,
+        "password": "",
+        "src": "",
+        "content": "<h2>脑机α原型机 · 技术文档</h2><h3><i></i>设计概要</h3><p>α原型采用七层堆叠式架构，单芯片集成度达到行业领先水平。核心处理器采用自研DSP阵列。</p><h3><i></i>关键技术参数</h3><table class=\"doc-table\" ><tr><th>指标</th><th>目标值</th><th>当前值</th><th>状态</th></tr><tr><td>信号采样率</td><td>≥1000Hz</td><td>1256Hz</td><td class=\"col1\">达标</td></tr><tr><td>通道数</td><td>≥64</td><td>72</td><td class=\"col1\">达标</td></tr><tr><td>信噪比</td><td>≥12dB</td><td>10.8dB</td><td class=\"col2\">接近</td></tr><tr><td>延迟</td><td>≤20ms</td><td>23ms</td><td class=\"col3\">超标</td></tr></table>"
+      }
+    ],
+    "draft": [
+      {
+        "id": "draft_sketch",
+        "name": "概念设计草图",
+        "type": "image",
+        "locked": false,
+        "password": "",
+        "src": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/doc_b1.jpg",
+        "content": ""
+      }
+    ]
+  }
+}

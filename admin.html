@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>内容编辑器 - 信息予你无限</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font:14px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#333;min-height:100vh;}
+a{color:#2362af;text-decoration:none;}
+button{cursor:pointer;}
+
+/* header */
+.header{background:#1a1a2e;color:#fff;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.header h1{font-size:18px;}
+.header-links{display:flex;gap:16px;align-items:center;}
+.header-links a{color:#8ab4f8;}
+.token-status{font-size:12px;padding:3px 10px;border-radius:10px;}
+.token-status.ok{background:#1b5e20;color:#a5d6a7;}
+.token-status.none{background:#4a148c;color:#e1bee7;}
+
+/* token setup */
+.token-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:999;display:flex;justify-content:center;align-items:center;}
+.token-box{background:#fff;border-radius:8px;padding:32px;width:480px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,0.24);}
+.token-box h2{font-size:18px;margin-bottom:8px;}
+.token-box p{color:#666;font-size:13px;margin-bottom:16px;line-height:1.6;}
+.token-box input{width:100%;padding:10px 12px;border:1px solid #d0d0d0;border-radius:6px;font-size:14px;font-family:monospace;margin-bottom:12px;}
+.token-box button{width:100%;padding:10px;background:#2362af;color:#fff;border:none;border-radius:6px;font-size:14px;}
+
+/* toolbar */
+.toolbar{background:#fff;border-bottom:1px solid #e0e0e0;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.toolbar-section{display:flex;gap:8px;align-items:center;}
+.toolbar button{padding:8px 16px;border-radius:6px;font-size:13px;border:1px solid #d0d0d0;background:#fff;}
+.toolbar button.primary{background:#2362af;color:#fff;border-color:#2362af;}
+.toolbar button.danger{background:#d32f2f;color:#fff;border-color:#d32f2f;}
+.toolbar select{padding:8px 12px;border-radius:6px;font-size:13px;border:1px solid #d0d0d0;}
+
+/* main layout */
+.main{max-width:1400px;margin:0 auto;padding:24px;display:flex;gap:24px;
+@media(max-width:900px){flex-direction:column;}}
+
+/* folder panel */
+.folder-panel{width:340px;flex-shrink:0;
+@media(max-width:900px){width:100%;}}
+.folder-panel h3,.doc-panel h3{margin-bottom:12px;font-size:14px;text-transform:uppercase;color:#666;letter-spacing:0.5px;}
+.folder-list{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08);}
+.folder-item{padding:12px 16px;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background 0.15s;}
+.folder-item:hover{background:#f5f8ff;}
+.folder-item.active{background:#e8f0fe;border-left:3px solid #2362af;}
+.folder-item .name{font-weight:500;}
+.folder-item .meta{font-size:11px;color:#999;display:flex;gap:6px;}
+.folder-item .meta span{padding:1px 6px;border-radius:4px;background:#f0f0f0;}
+.folder-item .meta span.locked{background:#fff3e0;color:#e65100;}
+.folder-item .actions{display:flex;gap:4px;opacity:0;transition:opacity 0.15s;}
+.folder-item:hover .actions{opacity:1;}
+.folder-item .actions button{font-size:11px;padding:2px 8px;border:1px solid #d0d0d0;border-radius:3px;background:#fff;}
+
+/* doc panel */
+.doc-panel{flex:1;min-width:0;}
+.doc-list{background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08);}
+.doc-item{padding:12px 16px;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background 0.15s;}
+.doc-item:hover{background:#f5f8ff;}
+.doc-item.active{background:#e8f0fe;border-left:3px solid #2362af;}
+.doc-item .name{font-weight:500;}
+.doc-item .meta{font-size:11px;color:#999;display:flex;gap:6px;align-items:center;}
+.doc-item .meta span{padding:1px 6px;border-radius:4px;background:#f0f0f0;}
+.doc-item .meta span.locked{background:#fff3e0;color:#e65100;}
+.doc-item .actions{display:flex;gap:4px;opacity:0;transition:opacity 0.15s;}
+.doc-item:hover .actions{opacity:1;}
+.doc-item .actions button{font-size:11px;padding:2px 8px;border:1px solid #d0d0d0;border-radius:3px;background:#fff;}
+
+/* edit form */
+.edit-form{background:#fff;border-radius:8px;padding:20px;margin-top:16px;box-shadow:0 1px 3px rgba(0,0,0,0.08);}
+.edit-form h3{margin-bottom:16px;}
+.form-row{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.form-row label{min-width:80px;line-height:32px;font-size:13px;color:#666;}
+.form-row input,.form-row select,.form-row textarea{flex:1;min-width:200px;padding:6px 12px;border:1px solid #d0d0d0;border-radius:6px;font-size:13px;}
+.form-row textarea{min-height:300px;font-family:monospace;font-size:12px;}
+.form-row input[type=checkbox]{flex:none;min-width:auto;width:16px;height:16px;margin-top:8px;}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+.form-actions button{padding:8px 20px;border-radius:6px;font-size:13px;border:1px solid #d0d0d0;background:#fff;}
+.form-actions button.save{background:#2362af;color:#fff;border-color:#2362af;}
+.form-actions button.delete{background:#fff;color:#d32f2f;border-color:#d32f2f;}
+
+/* toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 24px;border-radius:6px;font-size:14px;color:#fff;z-index:9999;pointer-events:none;transition:all 0.3s;opacity:0;}
+.toast.show{opacity:1;}
+.toast.success{background:#2e7d32;}
+.toast.error{background:#c62828;}
+.toast.info{background:#1565c0;}
+
+/* empty state */
+.empty{text-align:center;padding:40px 20px;color:#999;}
+.empty p{font-size:14px;}
+
+.hint{font-size:12px;color:#999;margin-top:4px;}
+</style>
+</head>
+<body>
+
+<!-- header -->
+<div class="header">
+  <h1>内容编辑器</h1>
+  <div class="header-links">
+    <span class="token-status none" id="tokenStatus">未设置Token</span>
+    <a href="hafukec.html" target="_blank">预览主站 →</a>
+    <a href="#" id="logoutBtn">切换账号</a>
+  </div>
+</div>
+
+<!-- toolbar -->
+<div class="toolbar">
+  <div class="toolbar-section">
+    <select id="folderSelect"><option value="">请先加载数据...</option></select>
+    <button onclick="addFolder()">+ 新建目录</button>
+    <button onclick="addDoc()">+ 新建文档</button>
+  </div>
+  <div class="toolbar-section">
+    Status: <span id="editStatus" style="color:#999;">未加载</span>
+    <button class="primary" id="saveBtn" onclick="saveToGitHub()" disabled>保存到 GitHub</button>
+    <button class="danger" onclick="reloadFromGitHub()">重新加载</button>
+  </div>
+</div>
+
+<!-- main -->
+<div class="main">
+  <!-- folder panel -->
+  <div class="folder-panel">
+    <h3>目录列表</h3>
+    <div class="folder-list" id="folderList">
+      <div class="empty"><p>加载中...</p></div>
+    </div>
+  </div>
+
+  <!-- doc panel -->
+  <div class="doc-panel">
+    <h3 id="docPanelTitle">文档列表</h3>
+    <div class="doc-list" id="docList">
+      <div class="empty"><p>请先选择一个目录</p></div>
+    </div>
+    <div class="edit-form" id="editForm" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- token overlay -->
+<div class="token-overlay" id="tokenOverlay">
+  <div class="token-box">
+    <h2>设置 GitHub Token</h2>
+    <p>
+      需要一个 GitHub Personal Access Token 来保存修改。<br>
+      1. 前往 <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a><br>
+      2. 创建 Classic Token，勾选 <b>repo</b> 权限<br>
+      3. 将生成的 Token 粘贴到下方<br>
+      <span style="color:#d32f2f;">Token 仅保存在你的浏览器 localStorage 中，不上传到任何服务器。</span>
+    </p>
+    <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    <button onclick="saveToken()">保存并加载数据</button>
+  </div>
+</div>
+
+<!-- toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+
+// ==================== 常量 ====================
+var OWNER = 'xiaogan03';
+var REPO = 'hafukec';
+var BRANCH = 'master';
+var FILE_PATH = 'data.json';
+var API_BASE = 'https://api.github.com';
+
+// ==================== 状态 ====================
+var data = null;
+var currentSha = null;
+var selectedFolderId = null;
+var selectedDocId = null;
+var editingFolder = null;   // folder being edited, or null
+var editingDoc = null;      // doc being edited, or null
+var token = localStorage.getItem('gh_token') || '';
+
+// ==================== DOM ====================
+var $ = function(s){ return document.querySelector(s); };
+var $$ = function(s){ return document.querySelectorAll(s); };
+
+var dom = {
+  tokenOverlay: $('#tokenOverlay'),
+  tokenInput: $('#tokenInput'),
+  tokenStatus: $('#tokenStatus'),
+  folderSelect: $('#folderSelect'),
+  folderList: $('#folderList'),
+  docList: $('#docList'),
+  docPanelTitle: $('#docPanelTitle'),
+  editForm: $('#editForm'),
+  editStatus: $('#editStatus'),
+  saveBtn: $('#saveBtn'),
+  toast: $('#toast')
+};
+
+// ==================== Toast ====================
+var toastTimer = null;
+function showToast(msg, type){
+  type = type || 'info';
+  clearTimeout(toastTimer);
+  dom.toast.textContent = msg;
+  dom.toast.className = 'toast show ' + type;
+  toastTimer = setTimeout(function(){ dom.toast.className = 'toast'; }, 2500);
+}
+
+// ==================== Token ====================
+function saveToken(){
+  token = dom.tokenInput.value.trim();
+  if (!token) { showToast('请输入 Token', 'error'); return; }
+  localStorage.setItem('gh_token', token);
+  dom.tokenOverlay.style.display = 'none';
+  dom.tokenStatus.textContent = '已连接';
+  dom.tokenStatus.className = 'token-status ok';
+  loadFromGitHub();
+}
+
+function setupToken(){
+  if (token) {
+    dom.tokenInput.value = token;
+    dom.tokenOverlay.style.display = 'none';
+    dom.tokenStatus.textContent = '已连接';
+    dom.tokenStatus.className = 'token-status ok';
+    loadFromGitHub();
+  } else {
+    dom.tokenOverlay.style.display = 'flex';
+    dom.tokenStatus.textContent = '未设置Token';
+    dom.tokenStatus.className = 'token-status none';
+  }
+  // pre-set token if user already has one from env
+  if (!token && window.__INITIAL_TOKEN__) {
+    token = window.__INITIAL_TOKEN__;
+    saveToken();
+  }
+}
+
+$('#logoutBtn').addEventListener('click', function(){
+  localStorage.removeItem('gh_token');
+  token = '';
+  data = null;
+  currentSha = null;
+  dom.tokenOverlay.style.display = 'flex';
+  dom.tokenInput.value = '';
+  dom.tokenStatus.textContent = '未设置Token';
+  dom.tokenStatus.className = 'token-status none';
+  dom.folderList.innerHTML = '<div class="empty"><p>请先设置 Token</p></div>';
+  dom.docList.innerHTML = '<div class="empty"><p>请先选择一个目录</p></div>';
+  dom.editForm.style.display = 'none';
+  dom.saveBtn.disabled = true;
+  dom.editStatus.textContent = '未加载';
+  dom.folderSelect.innerHTML = '<option value="">请先加载数据...</option>';
+});
+
+// ==================== GitHub API ====================
+function ghApi(method, path, body){
+  var headers = {
+    'Authorization': 'Bearer ' + token,
+    'Accept': 'application/vnd.github.v3+json'
+  };
+  var opts = { method: method, headers: headers };
+  if (body) {
+    headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(body);
+  }
+  return fetch(API_BASE + path, opts).then(function(res){
+    if (!res.ok) {
+      return res.json().then(function(err){
+        var e = new Error(err.message || 'API Error ' + res.status);
+        e.status = res.status;
+        throw e;
+      });
+    }
+    return res.json();
+  });
+}
+
+function loadFromGitHub(){
+  dom.editStatus.textContent = '加载中...';
+  ghApi('GET', '/repos/' + OWNER + '/' + REPO + '/contents/' + FILE_PATH + '?ref=' + BRANCH)
+    .then(function(res){
+      currentSha = res.sha;
+      var content = atob(res.content.replace(/\s/g, ''));
+      data = JSON.parse(content);
+      dom.editStatus.textContent = '已加载 (SHA: ' + currentSha.substr(0,7) + ')';
+      dom.saveBtn.disabled = false;
+      renderAll();
+      showToast('数据加载成功', 'success');
+    })
+    .catch(function(err){
+      dom.editStatus.textContent = '加载失败';
+      showToast('加载失败: ' + err.message, 'error');
+      if (err.status === 401) {
+        localStorage.removeItem('gh_token');
+        token = '';
+        setupToken();
+      }
+    });
+}
+
+function reloadFromGitHub(){
+  if (confirm('重新加载会丢弃当前所有未保存的修改，确定？')) {
+    editingFolder = null;
+    editingDoc = null;
+    loadFromGitHub();
+  }
+}
+
+function saveToGitHub(){
+  if (!data || !currentSha) { showToast('没有数据可保存', 'error'); return; }
+
+  // Auto-save current edit first
+  autoSaveEdit();
+
+  var content = JSON.stringify(data, null, 2);
+  var body = {
+    message: '更新内容 [admin editor]',
+    content: btoa(unescape(encodeURIComponent(content))),
+    sha: currentSha,
+    branch: BRANCH
+  };
+
+  dom.saveBtn.disabled = true;
+  dom.saveBtn.textContent = '保存中...';
+  dom.editStatus.textContent = '保存中...';
+
+  ghApi('PUT', '/repos/' + OWNER + '/' + REPO + '/contents/' + FILE_PATH, body)
+    .then(function(res){
+      currentSha = res.content.sha;
+      dom.editStatus.textContent = '已保存 (SHA: ' + currentSha.substr(0,7) + ')';
+      dom.saveBtn.disabled = false;
+      dom.saveBtn.textContent = '保存到 GitHub';
+      showToast('保存成功！页面将在 1-2 分钟后更新', 'success');
+      renderAll();
+    })
+    .catch(function(err){
+      dom.editStatus.textContent = '保存失败';
+      dom.saveBtn.disabled = false;
+      dom.saveBtn.textContent = '保存到 GitHub';
+      showToast('保存失败: ' + err.message, 'error');
+    });
+}
+
+function autoSaveEdit(){
+  if (editingFolder) {
+    saveFolderEdit();
+  }
+  if (editingDoc) {
+    saveDocEdit();
+  }
+}
+
+// ==================== Rendering ====================
+function renderAll(){
+  selectedFolderId = null;
+  selectedDocId = null;
+  editingFolder = null;
+  editingDoc = null;
+  dom.editForm.style.display = 'none';
+  renderFolderList();
+  renderFolderSelect();
+  dom.docList.innerHTML = '<div class="empty"><p>请先选择一个目录</p></div>';
+  dom.docPanelTitle.textContent = '文档列表';
+}
+
+function renderFolderList(){
+  if (!data || !data.folders) return;
+  var html = '';
+  data.folders.forEach(function(folder, idx){
+    html += '<div class="folder-item' + (selectedFolderId === folder.id ? ' active' : '') + '" data-id="' + folder.id + '">';
+    html += '<div>';
+    html += '<div class="name">' + escHtml(folder.name) + '</div>';
+    html += '<div class="meta">';
+    if (folder.locked) html += '<span class="locked">加密</span>';
+    html += '<span>ID: ' + escHtml(folder.id) + '</span>';
+    html += '</div></div>';
+    html += '<div class="actions">';
+    html += '<button data-action="edit-folder" data-idx="' + idx + '">编辑</button>';
+    html += '<button data-action="del-folder" data-idx="' + idx + '" style="color:#d32f2f;">删除</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  dom.folderList.innerHTML = html || '<div class="empty"><p>暂无目录</p></div>';
+}
+
+function renderFolderSelect(){
+  if (!data || !data.folders) return;
+  var html = '<option value="">选择目录...</option>';
+  data.folders.forEach(function(folder){
+    html += '<option value="' + folder.id + '"' + (selectedFolderId === folder.id ? ' selected' : '') + '>' + folder.name + '</option>';
+  });
+  dom.folderSelect.innerHTML = html;
+}
+
+function renderDocList(){
+  if (!selectedFolderId) {
+    dom.docList.innerHTML = '<div class="empty"><p>请先选择一个目录</p></div>';
+    dom.docPanelTitle.textContent = '文档列表';
+    return;
+  }
+  var docs = (data.documents && data.documents[selectedFolderId]) ? data.documents[selectedFolderId] : [];
+  var folderName = (data.folders.find(function(f){ return f.id === selectedFolderId; }) || {}).name || selectedFolderId;
+  dom.docPanelTitle.textContent = '文档列表 — ' + folderName;
+
+  if (docs.length === 0) {
+    dom.docList.innerHTML = '<div class="empty"><p>此目录下暂无文档</p></div>';
+    return;
+  }
+
+  var html = '';
+  docs.forEach(function(doc, idx){
+    html += '<div class="doc-item' + (selectedDocId === doc.id ? ' active' : '') + '" data-id="' + doc.id + '">';
+    html += '<div>';
+    html += '<div class="name">' + escHtml(doc.name) + '</div>';
+    html += '<div class="meta">';
+    html += '<span>' + doc.type + '</span>';
+    if (doc.locked) html += '<span class="locked">加密</span>';
+    html += '<span>ID: ' + escHtml(doc.id) + '</span>';
+    html += '</div></div>';
+    html += '<div class="actions">';
+    html += '<button data-action="edit-doc" data-idx="' + idx + '">编辑</button>';
+    html += '<button data-action="del-doc" data-idx="' + idx + '" style="color:#d32f2f;">删除</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  dom.docList.innerHTML = html;
+}
+
+// ==================== Edit Forms ====================
+function showFolderEdit(folder, idx){
+  editingFolder = { folder: folder, idx: idx };
+  editingDoc = null;
+  selectedDocId = null;
+
+  var html = '<h3>编辑目录</h3>';
+  html += '<div class="form-row"><label>目录名称</label><input id="ef-name" value="' + escHtml(folder.name) + '"></div>';
+  html += '<div class="form-row"><label>目录ID</label><input id="ef-id" value="' + escHtml(folder.id) + '" placeholder="英文标识，如 my_folder"></div>';
+  html += '<div class="form-row"><label>图标URL</label><input id="ef-icon" value="' + escHtml(folder.icon) + '"></div>';
+  html += '<div class="form-row"><label>加密</label><input type="checkbox" id="ef-locked"' + (folder.locked ? ' checked' : '') + '><span style="font-size:12px;color:#666;">需要密码才能打开</span></div>';
+  html += '<div class="form-row"><label>密码</label><input id="ef-password" value="' + escHtml(folder.password) + '" placeholder="加密密码"></div>';
+  html += '<div class="form-actions">';
+  html += '<button onclick="cancelEdit()">取消</button>';
+  html += '<button class="save" onclick="saveFolderEdit()">应用修改</button>';
+  html += '</div>';
+
+  dom.editForm.innerHTML = html;
+  dom.editForm.style.display = 'block';
+  dom.editForm.scrollIntoView({ behavior: 'smooth' });
+}
+
+function showDocEdit(doc, idx){
+  editingDoc = { doc: doc, idx: idx };
+  editingFolder = null;
+  selectedDocId = doc.id;
+
+  var html = '<h3>编辑文档</h3>';
+  html += '<div class="form-row"><label>文档名称</label><input id="ed-name" value="' + escHtml(doc.name) + '"></div>';
+  html += '<div class="form-row"><label>文档ID</label><input id="ed-id" value="' + escHtml(doc.id) + '" placeholder="英文标识"></div>';
+  html += '<div class="form-row"><label>类型</label><select id="ed-type"><option value="text"' + (doc.type === 'text' ? ' selected' : '') + '>文章 (text)</option><option value="image"' + (doc.type === 'image' ? ' selected' : '') + '>图片 (image)</option></select></div>';
+  html += '<div class="form-row"><label>加密</label><input type="checkbox" id="ed-locked"' + (doc.locked ? ' checked' : '') + '><span style="font-size:12px;color:#666;">需要密码才能打开</span></div>';
+  html += '<div class="form-row"><label>密码</label><input id="ed-password" value="' + escHtml(doc.password) + '" placeholder="加密密码"></div>';
+  html += '<div class="form-row"><label>图片URL</label><input id="ed-src" value="' + escHtml(doc.src) + '" placeholder="仅图片类型需要"></div>';
+  html += '<div class="form-row"><label>文章内容</label><textarea id="ed-content" class="content-field">' + escHtml(doc.content) + '</textarea></div>';
+  html += '<p class="hint">文章内容支持 HTML 格式</p>';
+  html += '<div class="form-actions">';
+  html += '<button onclick="cancelEdit()">取消</button>';
+  html += '<button class="save" onclick="saveDocEdit()">应用修改</button>';
+  html += '</div>';
+
+  dom.editForm.innerHTML = html;
+  dom.editForm.style.display = 'block';
+  dom.editForm.scrollIntoView({ behavior: 'smooth' });
+}
+
+function showAddFolder(){
+  editingDoc = null;
+  editingFolder = { folder: { id: '', name: '', icon: 'https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png', locked: false, password: '' }, idx: -1 };
+
+  var html = '<h3>新建目录</h3>';
+  html += '<div class="form-row"><label>目录名称</label><input id="ef-name" value="" placeholder="新目录名称"></div>';
+  html += '<div class="form-row"><label>目录ID</label><input id="ef-id" value="" placeholder="英文标识，如 new_folder"></div>';
+  html += '<div class="form-row"><label>图标URL</label><input id="ef-icon" value="https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png"></div>';
+  html += '<div class="form-row"><label>加密</label><input type="checkbox" id="ef-locked"><span style="font-size:12px;color:#666;">需要密码才能打开</span></div>';
+  html += '<div class="form-row"><label>密码</label><input id="ef-password" value="" placeholder="加密密码（锁定需填）"></div>';
+  html += '<div class="form-actions">';
+  html += '<button onclick="cancelEdit()">取消</button>';
+  html += '<button class="save" onclick="saveFolderEdit()">创建</button>';
+  html += '</div>';
+
+  dom.editForm.innerHTML = html;
+  dom.editForm.style.display = 'block';
+  dom.editForm.scrollIntoView({ behavior: 'smooth' });
+}
+
+function showAddDoc(){
+  if (!selectedFolderId) { showToast('请先选择一个目录', 'error'); return; }
+  editingFolder = null;
+  editingDoc = { doc: { id: '', name: '', type: 'text', locked: false, password: '', src: '', content: '' }, idx: -1 };
+
+  var html = '<h3>新建文档</h3>';
+  html += '<div class="form-row"><label>文档名称</label><input id="ed-name" value="" placeholder="新文档名称"></div>';
+  html += '<div class="form-row"><label>文档ID</label><input id="ed-id" value="" placeholder="英文标识"></div>';
+  html += '<div class="form-row"><label>类型</label><select id="ed-type"><option value="text">文章 (text)</option><option value="image">图片 (image)</option></select></div>';
+  html += '<div class="form-row"><label>加密</label><input type="checkbox" id="ed-locked"><span style="font-size:12px;color:#666;">需要密码才能打开</span></div>';
+  html += '<div class="form-row"><label>密码</label><input id="ed-password" value="" placeholder="加密密码"></div>';
+  html += '<div class="form-row"><label>图片URL</label><input id="ed-src" value="" placeholder="仅图片类型"></div>';
+  html += '<div class="form-row"><label>文章内容</label><textarea id="ed-content" class="content-field"></textarea></div>';
+  html += '<p class="hint">文章内容支持 HTML 格式</p>';
+  html += '<div class="form-actions">';
+  html += '<button onclick="cancelEdit()">取消</button>';
+  html += '<button class="save" onclick="saveDocEdit()">创建</button>';
+  html += '</div>';
+
+  dom.editForm.innerHTML = html;
+  dom.editForm.style.display = 'block';
+  dom.editForm.scrollIntoView({ behavior: 'smooth' });
+}
+
+function saveFolderEdit(){
+  if (!editingFolder) return;
+  var name = $('#ef-name').value.trim();
+  var id = $('#ef-id').value.trim();
+  var icon = $('#ef-icon').value.trim();
+  var locked = $('#ef-locked').checked;
+  var password = $('#ef-password').value;
+
+  if (!name || !id) { showToast('名称和ID不能为空', 'error'); return; }
+
+  var folder = {
+    id: id,
+    name: name,
+    icon: icon,
+    locked: locked,
+    password: locked ? password : ''
+  };
+
+  if (editingFolder.idx >= 0) {
+    // update existing
+    var oldId = editingFolder.folder.id;
+    if (oldId !== id) {
+      // id changed - update documents key too
+      if (data.documents && data.documents[oldId]) {
+        data.documents[id] = data.documents[oldId];
+        delete data.documents[oldId];
+      }
+    }
+    data.folders[editingFolder.idx] = folder;
+  } else {
+    // new folder
+    data.folders.push(folder);
+    if (!data.documents) data.documents = {};
+    data.documents[id] = [];
+  }
+
+  editingFolder = null;
+  dom.editForm.style.display = 'none';
+  selectedFolderId = id;
+  renderFolderList();
+  renderFolderSelect();
+  renderDocList();
+  dom.folderSelect.value = id;
+  showToast('目录已更新（未保存到 GitHub）', 'info');
+}
+
+function saveDocEdit(){
+  if (!editingDoc || !selectedFolderId) return;
+  var name = $('#ed-name').value.trim();
+  var id = $('#ed-id').value.trim();
+  var type = $('#ed-type').value;
+  var locked = $('#ed-locked').checked;
+  var password = $('#ed-password').value;
+  var src = $('#ed-src').value.trim();
+  var content = $('#ed-content').value;
+
+  if (!name || !id) { showToast('名称和ID不能为空', 'error'); return; }
+
+  var doc = {
+    id: id,
+    name: name,
+    type: type,
+    locked: locked,
+    password: locked ? password : '',
+    src: src,
+    content: type === 'text' ? content : ''
+  };
+
+  if (!data.documents) data.documents = {};
+  if (!data.documents[selectedFolderId]) data.documents[selectedFolderId] = [];
+
+  if (editingDoc.idx >= 0) {
+    data.documents[selectedFolderId][editingDoc.idx] = doc;
+  } else {
+    data.documents[selectedFolderId].push(doc);
+  }
+
+  editingDoc = null;
+  dom.editForm.style.display = 'none';
+  selectedDocId = id;
+  renderDocList();
+  showToast('文档已更新（未保存到 GitHub）', 'info');
+}
+
+function cancelEdit(){
+  editingFolder = null;
+  editingDoc = null;
+  dom.editForm.style.display = 'none';
+}
+
+// ==================== Event Delegation ====================
+dom.folderList.addEventListener('click', function(e){
+  var folderItem = e.target.closest('.folder-item');
+  var btn = e.target.closest('button');
+
+  if (btn) {
+    var action = btn.getAttribute('data-action');
+    var idx = parseInt(btn.getAttribute('data-idx'));
+
+    if (action === 'edit-folder') {
+      autoSaveEdit();
+      showFolderEdit(data.folders[idx], idx);
+      return;
+    }
+    if (action === 'del-folder') {
+      if (!confirm('确定删除目录 "' + data.folders[idx].name + '" 及其所有文档？此操作不可恢复。')) return;
+      var folderId = data.folders[idx].id;
+      data.folders.splice(idx, 1);
+      if (data.documents && data.documents[folderId]) delete data.documents[folderId];
+      editingFolder = null;
+      dom.editForm.style.display = 'none';
+      selectedFolderId = null;
+      renderFolderList();
+      renderFolderSelect();
+      dom.docList.innerHTML = '<div class="empty"><p>请先选择一个目录</p></div>';
+      showToast('目录已删除（请保存到 GitHub）', 'info');
+      return;
+    }
+  }
+
+  // click on folder item
+  if (folderItem) {
+    autoSaveEdit();
+    var fid = folderItem.getAttribute('data-id');
+    selectedFolderId = fid;
+    selectedDocId = null;
+    renderFolderList();
+    renderFolderSelect();
+    renderDocList();
+    dom.folderSelect.value = fid;
+  }
+});
+
+dom.docList.addEventListener('click', function(e){
+  var docItem = e.target.closest('.doc-item');
+  var btn = e.target.closest('button');
+
+  if (btn) {
+    var action = btn.getAttribute('data-action');
+    var idx = parseInt(btn.getAttribute('data-idx'));
+
+    if (action === 'edit-doc') {
+      autoSaveEdit();
+      var docs = data.documents[selectedFolderId] || [];
+      showDocEdit(docs[idx], idx);
+      return;
+    }
+    if (action === 'del-doc') {
+      var docs = data.documents[selectedFolderId] || [];
+      if (!confirm('确定删除文档 "' + docs[idx].name + '"？')) return;
+      docs.splice(idx, 1);
+      editingDoc = null;
+      dom.editForm.style.display = 'none';
+      selectedDocId = null;
+      renderDocList();
+      showToast('文档已删除（请保存到 GitHub）', 'info');
+      return;
+    }
+  }
+
+  // click on doc item
+  if (docItem) {
+    autoSaveEdit();
+    var did = docItem.getAttribute('data-id');
+    selectedDocId = did;
+    renderDocList();
+    var docs = data.documents[selectedFolderId] || [];
+    var idx = docs.findIndex(function(d){ return d.id === did; });
+    if (idx >= 0) showDocEdit(docs[idx], idx);
+  }
+});
+
+// folder select change
+dom.folderSelect.addEventListener('change', function(){
+  autoSaveEdit();
+  selectedFolderId = this.value;
+  selectedDocId = null;
+  renderFolderList();
+  renderDocList();
+});
+
+// ==================== Global functions ====================
+window.addFolder = function(){ autoSaveEdit(); showAddFolder(); };
+window.addDoc = function(){ autoSaveEdit(); showAddDoc(); };
+window.saveToGitHub = saveToGitHub;
+window.reloadFromGitHub = reloadFromGitHub;
+window.saveFolderEdit = saveFolderEdit;
+window.saveDocEdit = saveDocEdit;
+window.cancelEdit = cancelEdit;
+
+// ==================== Init ====================
+setupToken();
+})();
+</script>
+</body>
+</html>
