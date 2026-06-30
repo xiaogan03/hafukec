@@ -199,6 +199,16 @@ var dom = {
   toast: $('#toast')
 };
 
+// ==================== Utils ====================
+function utf8ToBase64(str) {
+  var bytes = new TextEncoder().encode(str);
+  var bin = '';
+  for (var i = 0; i < bytes.length; i++) {
+    bin += String.fromCharCode(bytes[i]);
+  }
+  return btoa(bin);
+}
+
 // ==================== Toast ====================
 var toastTimer = null;
 function showToast(msg, type){
@@ -319,7 +329,7 @@ function saveToGitHub(){
   var content = JSON.stringify(data, null, 2);
   var body = {
     message: '更新内容 [admin editor]',
-    content: btoa(unescape(encodeURIComponent(content))),
+    content: utf8ToBase64(content),
     sha: currentSha,
     branch: BRANCH
   };
