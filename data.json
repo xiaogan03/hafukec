@@ -151,6 +151,15 @@
         "password": "",
         "src": "",
         "content": "<h2>我爱你</h2><p></p>"
+      },
+      {
+        "id": "doc_1782950228309",
+        "name": "某员工日记",
+        "type": "text",
+        "locked": false,
+        "password": "",
+        "src": "",
+        "content": "<h2>某员工日记</h2><p></p>"
       }
     ],
     "nuclear": [
