@@ -1143,6 +1143,7 @@ input[type="password"]{
     // Update mockData
     var locked = $('#editLock').checked;
     var pwd = $('#editLockPwd').value;
+    if (locked && !pwd.trim()) { showCopyToast('请先输入访问密钥'); btn.disabled = false; btn.textContent = '保存到 GitHub'; return; }
     for (var folderId in mockData.documents) {
       var found = mockData.documents[folderId].find(function(d){ return d.id === docId; });
       if (found) {
