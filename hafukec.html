@@ -1318,6 +1318,7 @@ input[type="password"]{
   var newCallback = null;
 
   function showNewModal(title, label, cb){
+    console.log('showNewModal called, cb:', typeof cb);
     newCallback = cb;
     $('#newTitle').textContent = title;
     $('#newLabel').textContent = label;
@@ -1333,9 +1334,12 @@ input[type="password"]{
 
   $('#newConfirm').addEventListener('click', function(){
     var name = $('#newInput').value.trim();
+    console.log('newConfirm clicked, name:', name);
     if (!name) return;
     hideNewModal();
-    if (newCallback) newCallback(name);
+    console.log('calling callback');
+    if (newCallback) { console.log('has callback'); newCallback(name); }
+    else { console.log('no callback!'); }
   });
 
   $('#newCancel').addEventListener('click', hideNewModal);
