@@ -1380,9 +1380,6 @@ input[type="password"]{
 
     var body = JSON.stringify(mockData, null, 2);
     var btn = $('#btnEditSave');
-    var origText = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = '保存中...';
 
     fetch('https://api.github.com/repos/xiaogan03/hafukec/contents/data.json?ref=master', {
       headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
@@ -1404,14 +1401,12 @@ input[type="password"]{
     })
     .then(function(r){ return r.json(); })
     .then(function(){
-      btn.disabled = false;
-      btn.textContent = origText;
+      if (btn) { btn.disabled = false; btn.textContent = '保存到 GitHub'; }
       showCopyToast('保存成功！');
       if (callback) callback();
     })
     .catch(function(err){
-      btn.disabled = false;
-      btn.textContent = origText;
+      if (btn) { btn.disabled = false; btn.textContent = '保存到 GitHub'; }
       showCopyToast('保存失败: ' + err.message);
     });
   }
