@@ -283,7 +283,7 @@ input[type="password"]{
 }
 .doc-text h2{
   font-size:0.4rem;color:#202020;text-align:left;line-height:0.5rem;
-  font-family:'fzltzh';margin:0.46rem auto 0;
+  font-family:'fzltzh';margin:0.46rem 0 0;
 }
 .doc-text h3{
   border-top:1px solid #c5daec;height:1rem;
@@ -1043,9 +1043,13 @@ input[type="password"]{
       if (sel.rangeCount > 0) {
         var node = sel.getRangeAt(0).commonAncestorContainer;
         var el = node.nodeType === 3 ? node.parentElement : node;
-        var block = el.closest(arg.toUpperCase());
+        var tag = arg.toUpperCase();
+        var block = el.closest(tag);
         if (block) {
-          document.execCommand('formatBlock', false, 'p');
+          // Replace heading element with <p> directly (execCommand unreliable for this)
+          var p = document.createElement('p');
+          p.innerHTML = block.innerHTML;
+          block.parentNode.replaceChild(p, block);
         } else {
           document.execCommand(cmd, false, arg);
         }
