@@ -118,6 +118,26 @@ body{font:0.2rem/1.5 'fzlth','simhei','Microsoft YaHei',sans-serif;background:#e
 .toast.success{background:#2e7d32;}
 .toast.error{background:#c62828;}
 .toast.info{background:#1565c0;}
+
+/* ============ Content Editor (WYSIWYG) ============ */
+.content-editor{min-height:5rem;padding:0.2rem 0.3rem;border:1px solid #d0d0d0;border-radius:0.1rem;background:#fff;font-size:0.22rem;color:#494949;line-height:1.7;outline:none;overflow-y:auto;}
+.content-editor:focus{border-color:#2362af;box-shadow:0 0 0 0.04rem rgba(35,98,175,0.1);}
+.content-editor h2{font-size:0.32rem;color:#202020;font-family:'fzltzh';margin:0.24rem 0 0.12rem;}
+.content-editor h3{border-top:1px solid #c5daec;font-size:0.28rem;color:#202020;font-family:'fzltzh';margin:0.16rem 0 0.1rem;padding-top:0.16rem;}
+.content-editor p{font-size:0.22rem;color:#6d7888;margin:0.1rem 0;}
+.content-editor ul{margin:0.1rem 0;padding-left:0.4rem;}
+.content-editor ul li{font-size:0.22rem;color:#6d7888;line-height:1.8;list-style:disc;}
+.content-editor table{width:100%;margin:0.16rem 0;background:#fafdff;font-size:0.22rem;color:#494949;border-collapse:collapse;}
+.content-editor table th{height:0.8rem;color:#2362af;font-family:'fzltzh';background:#eff8ff;padding:0 0.3rem;text-align:left;border:1px solid #e0ecf7;}
+.content-editor table td{padding:0 0.3rem;height:0.8rem;border:1px solid #e0ecf7;}
+.content-editor img{max-width:100%;}
+
+/* formatting toolbar */
+.fmt-bar{display:flex;gap:0.08rem;margin-bottom:0.12rem;flex-wrap:wrap;}
+.fmt-bar button{width:0.5rem;height:0.5rem;border:1px solid #d0d0d0;border-radius:0.06rem;background:#fff;font-size:0.18rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.12s;}
+.fmt-bar button:hover{background:#e8f4ff;border-color:#5894de;}
+.fmt-bar button.active{background:#2362af;color:#fff;border-color:#2362af;}
+.fmt-bar .sep{width:1px;background:#d0d0d0;margin:0 0.06rem;}
 </style>
 </head>
 <body>
@@ -495,8 +515,21 @@ function showDocEdit(doc, idx){
   html += '<div class="form-row"><label>加密</label><input type="checkbox" id="ed-locked"' + (doc.locked ? ' checked' : '') + '><span class="checkbox-hint">需要密码才能打开</span></div>';
   html += '<div class="form-row"><label>密码</label><input id="ed-password" value="' + escHtml(doc.password) + '" placeholder="加密密码（锁定需填）"></div>';
   html += '<div class="form-row"><label>图片 URL</label><input id="ed-src" value="' + escHtml(doc.src) + '" placeholder="仅图片类型需要"></div>';
-  html += '<div class="form-row"><label>文章内容</label><textarea id="ed-content">' + escHtml(doc.content) + '</textarea></div>';
-  html += '<p class="hint">文章内容支持 HTML 格式</p>';
+  html += '<div class="form-row"><label>文章内容</label><div style="flex:1;min-width:3rem;">';
+  html += '<div class="fmt-bar">';
+  html += '<button onclick="fmtCmd(''bold'')" title="加粗"><b>B</b></button>';
+  html += '<button onclick="fmtCmd(''italic'')" title="斜体"><i>I</i></button>';
+  html += '<span class="sep"></span>';
+  html += '<button onclick="fmtCmd(''formatBlock'',''h2'')" title="标题">H2</button>';
+  html += '<button onclick="fmtCmd(''formatBlock'',''h3'')" title="小标题">H3</button>';
+  html += '<button onclick="fmtCmd(''formatBlock'',''p'')" title="正文">P</button>';
+  html += '<span class="sep"></span>';
+  html += '<button onclick="fmtCmd(''insertUnorderedList'')" title="列表">•</button>';
+  html += '<button onclick="fmtCmd(''insertHorizontalRule'')" title="分隔线">—</button>';
+  html += '</div>';
+  html += '<div class="content-editor" id="ed-content" contenteditable="true">' + (doc.content || '') + '</div>';
+  html += '</div></div>';
+  html += '<p class="hint">直接编辑内容，选中文字可用工具栏调整格式</p>';
   html += '<div class="form-actions">';
   html += '<button onclick="cancelEdit()">取消</button>';
   html += '<button class="save" onclick="saveDocEdit()">应用修改</button>';
@@ -539,8 +572,21 @@ function showAddDoc(){
   html += '<div class="form-row"><label>加密</label><input type="checkbox" id="ed-locked"><span class="checkbox-hint">需要密码才能打开</span></div>';
   html += '<div class="form-row"><label>密码</label><input id="ed-password" value="" placeholder="加密密码（锁定需填）"></div>';
   html += '<div class="form-row"><label>图片 URL</label><input id="ed-src" value="" placeholder="仅图片类型"></div>';
-  html += '<div class="form-row"><label>文章内容</label><textarea id="ed-content"></textarea></div>';
-  html += '<p class="hint">文章内容支持 HTML 格式</p>';
+  html += '<div class="form-row"><label>文章内容</label><div style="flex:1;min-width:3rem;">';
+  html += '<div class="fmt-bar">';
+  html += '<button onclick="fmtCmd(''bold'')" title="加粗"><b>B</b></button>';
+  html += '<button onclick="fmtCmd(''italic'')" title="斜体"><i>I</i></button>';
+  html += '<span class="sep"></span>';
+  html += '<button onclick="fmtCmd(''formatBlock'',''h2'')" title="标题">H2</button>';
+  html += '<button onclick="fmtCmd(''formatBlock'',''h3'')" title="小标题">H3</button>';
+  html += '<button onclick="fmtCmd(''formatBlock'',''p'')" title="正文">P</button>';
+  html += '<span class="sep"></span>';
+  html += '<button onclick="fmtCmd(''insertUnorderedList'')" title="列表">•</button>';
+  html += '<button onclick="fmtCmd(''insertHorizontalRule'')" title="分隔线">—</button>';
+  html += '</div>';
+  html += '<div class="content-editor" id="ed-content" contenteditable="true"></div>';
+  html += '</div></div>';
+  html += '<p class="hint">直接编辑内容，选中文字可用工具栏调整格式</p>';
   html += '<div class="form-actions">';
   html += '<button onclick="cancelEdit()">取消</button>';
   html += '<button class="save" onclick="saveDocEdit()">创建</button>';
@@ -594,7 +640,7 @@ function saveDocEdit(){
   var locked = $('#ed-locked').checked;
   var password = $('#ed-password').value;
   var src = $('#ed-src').value.trim();
-  var content = $('#ed-content').value;
+  var content = $('#ed-content').innerHTML;
 
   if (!name || !id) { showToast('名称和 ID 不能为空', 'error'); return; }
 
@@ -709,6 +755,14 @@ dom.folderSelect.addEventListener('change', function(){
   renderFolderList();
   renderDocList();
 });
+
+function fmtCmd(cmd, arg){
+  document.execCommand(cmd, false, arg || null);
+  var ed = document.getElementById('ed-content');
+  if (ed) ed.focus();
+}
+
+window.fmtCmd = fmtCmd;
 
 // ==================== Global functions ====================
 window.addFolder = function(){ autoSaveEdit(); showAddFolder(); };
