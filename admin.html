@@ -516,16 +516,16 @@ function showDocEdit(doc, idx){
   html += '<div class="form-row"><label>密码</label><input id="ed-password" value="' + escHtml(doc.password) + '" placeholder="加密密码（锁定需填）"></div>';
   html += '<div class="form-row"><label>图片 URL</label><input id="ed-src" value="' + escHtml(doc.src) + '" placeholder="仅图片类型需要"></div>';
   html += '<div class="form-row"><label>文章内容</label><div style="flex:1;min-width:3rem;">';
-  html += '<div class="fmt-bar">';
-  html += '<button onclick="fmtCmd("bold")" title="加粗"><b>B</b></button>';
-  html += '<button onclick="fmtCmd("italic")" title="斜体"><i>I</i></button>';
+  html += '<div class="fmt-bar" data-fmt-bar>';
+  html += '<button data-fmt="bold" title="加粗"><b>B</b></button>';
+  html += '<button data-fmt="italic" title="斜体"><i>I</i></button>';
   html += '<span class="sep"></span>';
-  html += '<button onclick="fmtCmd("formatBlock","h2")" title="标题">H2</button>';
-  html += '<button onclick="fmtCmd("formatBlock","h3")" title="小标题">H3</button>';
-  html += '<button onclick="fmtCmd("formatBlock","p")" title="正文">P</button>';
+  html += '<button data-fmt="formatBlock" data-fmt-arg="h2" title="标题">H2</button>';
+  html += '<button data-fmt="formatBlock" data-fmt-arg="h3" title="小标题">H3</button>';
+  html += '<button data-fmt="formatBlock" data-fmt-arg="p" title="正文">P</button>';
   html += '<span class="sep"></span>';
-  html += '<button onclick="fmtCmd("insertUnorderedList")" title="列表">•</button>';
-  html += '<button onclick="fmtCmd("insertHorizontalRule")" title="分隔线">—</button>';
+  html += '<button data-fmt="insertUnorderedList" title="列表">•</button>';
+  html += '<button data-fmt="insertHorizontalRule" title="分隔线">—</button>';
   html += '</div>';
   html += '<div class="content-editor" id="ed-content" contenteditable="true">' + (doc.content || '') + '</div>';
   html += '</div></div>';
@@ -573,16 +573,16 @@ function showAddDoc(){
   html += '<div class="form-row"><label>密码</label><input id="ed-password" value="" placeholder="加密密码（锁定需填）"></div>';
   html += '<div class="form-row"><label>图片 URL</label><input id="ed-src" value="" placeholder="仅图片类型"></div>';
   html += '<div class="form-row"><label>文章内容</label><div style="flex:1;min-width:3rem;">';
-  html += '<div class="fmt-bar">';
-  html += '<button onclick="fmtCmd("bold")" title="加粗"><b>B</b></button>';
-  html += '<button onclick="fmtCmd("italic")" title="斜体"><i>I</i></button>';
+  html += '<div class="fmt-bar" data-fmt-bar>';
+  html += '<button data-fmt="bold" title="加粗"><b>B</b></button>';
+  html += '<button data-fmt="italic" title="斜体"><i>I</i></button>';
   html += '<span class="sep"></span>';
-  html += '<button onclick="fmtCmd("formatBlock","h2")" title="标题">H2</button>';
-  html += '<button onclick="fmtCmd("formatBlock","h3")" title="小标题">H3</button>';
-  html += '<button onclick="fmtCmd("formatBlock","p")" title="正文">P</button>';
+  html += '<button data-fmt="formatBlock" data-fmt-arg="h2" title="标题">H2</button>';
+  html += '<button data-fmt="formatBlock" data-fmt-arg="h3" title="小标题">H3</button>';
+  html += '<button data-fmt="formatBlock" data-fmt-arg="p" title="正文">P</button>';
   html += '<span class="sep"></span>';
-  html += '<button onclick="fmtCmd("insertUnorderedList")" title="列表">•</button>';
-  html += '<button onclick="fmtCmd("insertHorizontalRule")" title="分隔线">—</button>';
+  html += '<button data-fmt="insertUnorderedList" title="列表">•</button>';
+  html += '<button data-fmt="insertHorizontalRule" title="分隔线">—</button>';
   html += '</div>';
   html += '<div class="content-editor" id="ed-content" contenteditable="true"></div>';
   html += '</div></div>';
@@ -756,13 +756,16 @@ dom.folderSelect.addEventListener('change', function(){
   renderDocList();
 });
 
-function fmtCmd(cmd, arg){
-  document.execCommand(cmd, false, arg || null);
+// Format toolbar event delegation
+dom.editForm.addEventListener('click', function(e){
+  var btn = e.target.closest('[data-fmt]');
+  if (!btn) return;
+  var cmd = btn.getAttribute('data-fmt');
+  var arg = btn.getAttribute('data-fmt-arg') || null;
+  document.execCommand(cmd, false, arg);
   var ed = document.getElementById('ed-content');
   if (ed) ed.focus();
-}
-
-window.fmtCmd = fmtCmd;
+});
 
 // ==================== Global functions ====================
 window.addFolder = function(){ autoSaveEdit(); showAddFolder(); };
