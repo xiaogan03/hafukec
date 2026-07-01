@@ -459,6 +459,7 @@ input[type="password"]{
 .new-btns .login-btn{font-size:0.32rem;}
 .new-cancel{font-size:0.24rem;color:#9fb0cb;font-family:'fzltzh';cursor:pointer;}
 .new-cancel:hover{color:#5894de;}
+.new-msg{font-size:0.24rem;color:#6d7888;text-align:center;margin-bottom:0.4rem;line-height:1.6;}
 </style>
 </head>
 <body>
@@ -555,11 +556,12 @@ input[type="password"]{
   </div>
 </div>
 
-<!-- ============ 新建弹窗 ============ -->
+<!-- ============ 通用弹窗 ============ -->
 <div class="new-overlay" id="newOverlay">
   <div class="new-box">
     <p class="new-title" id="newTitle">新建目录</p>
-    <div class="form-group">
+    <p class="new-msg" id="newMsg" style="display:none;"></p>
+    <div class="form-group" id="newFormGroup">
       <label id="newLabel">目录名称</label>
       <input type="text" id="newInput" placeholder="请输入名称..." maxlength="50">
     </div>
@@ -847,11 +849,13 @@ input[type="password"]{
       var idx = parseInt(btn.getAttribute('data-idx'));
       if (action === 'delfolder') {
         var folder = mockData.folders[idx];
-        if (!confirm('确定删除目录 "' + folder.name + '" 及其中所有文档？此操作不可恢复。')) return;
-        var fid = folder.id;
-        mockData.folders.splice(idx, 1);
-        if (mockData.documents && mockData.documents[fid]) delete mockData.documents[fid];
-        doSaveData('删除目录: ' + folder.name, function(){ renderFolders(); });
+        showConfirm('删除目录', '确定删除 "' + folder.name + '" 及其中所有文档？此操作不可恢复。', function(ok){
+          if (!ok) return;
+          var fid = folder.id;
+          mockData.folders.splice(idx, 1);
+          if (mockData.documents && mockData.documents[fid]) delete mockData.documents[fid];
+          doSaveData('删除目录: ' + folder.name, function(){ renderFolders(); });
+        });
         return;
       }
       if (action === 'lock') {
@@ -862,12 +866,13 @@ input[type="password"]{
           folder.icon = FOLDER_ICON;
           doSaveData('解锁目录: ' + folder.name, function(){ renderFolders(); });
         } else {
-          var pwd = prompt('请输入该目录的访问密钥：');
-          if (!pwd || !pwd.trim()) return;
-          folder.locked = true;
-          folder.password = pwd.trim();
-          folder.icon = FOLDER_ICON_LOCKED;
-          doSaveData('加密目录: ' + folder.name, function(){ renderFolders(); });
+          showNewModal('设置密钥', '访问密钥', function(pwd){
+            if (!pwd || !pwd.trim()) return;
+            folder.locked = true;
+            folder.password = pwd.trim();
+            folder.icon = FOLDER_ICON_LOCKED;
+            doSaveData('加密目录: ' + folder.name, function(){ renderFolders(); });
+          });
         }
         return;
       }
@@ -1186,25 +1191,28 @@ input[type="password"]{
       var range = sel.getRangeAt(0);
       var node = range.commonAncestorContainer;
       var el = node.nodeType === 3 ? node.parentElement : node;
-      // Only skip paragraph if cursor is at start of an empty <p>
       var p = el.closest('p');
       var isEmptyP = p && p.textContent.trim() === '' && range.collapsed && range.startOffset === 0;
       if (!isEmptyP) {
         document.execCommand('insertParagraph', false, null);
       }
     }
-    var rows = parseInt(prompt('表格行数（不含表头）:', '3')) || 3;
-    var cols = parseInt(prompt('表格列数:', '2')) || 2;
-    var html = '<table class=\"doc-table\"><tr>';
-    for (var c = 0; c < cols; c++) html += '<th>表头' + (c+1) + '</th>';
-    html += '</tr>';
-    for (var r = 0; r < rows; r++) {
-      html += '<tr>';
-      for (var c = 0; c < cols; c++) html += '<td>内容</td>';
-      html += '</tr>';
-    }
-    html += '</table><p>&#8203;</p>';
-    document.execCommand('insertHTML', false, html);
+    showNewModal('插入表格', '行数（不含表头）', function(rows){
+      rows = parseInt(rows) || 3;
+      showNewModal('插入表格', '列数', function(cols){
+        cols = parseInt(cols) || 2;
+        var html = '<table class=\"doc-table\"><tr>';
+        for (var c = 0; c < cols; c++) html += '<th>表头' + (c+1) + '</th>';
+        html += '</tr>';
+        for (var r = 0; r < rows; r++) {
+          html += '<tr>';
+          for (var c = 0; c < cols; c++) html += '<td>内容</td>';
+          html += '</tr>';
+        }
+        html += '</table><p>&#8203;</p>';
+        document.execCommand('insertHTML', false, html);
+      });
+    });
   }
 
   // Save document to GitHub
@@ -1292,12 +1300,13 @@ input[type="password"]{
   }
 
   function promptToken(){
-    var tok = prompt('请输入 GitHub Personal Access Token：\n（创建地址：github.com/settings/tokens，需勾选 repo 权限）');
-    if (tok && tok.trim()) {
-      localStorage.setItem('gh_token', tok.trim());
-      showCopyToast('Token 已保存');
-      doSave(tok.trim());
-    }
+    showNewModal('GitHub Token', 'Personal Access Token（需勾选 repo 权限）', function(tok){
+      if (tok && tok.trim()) {
+        localStorage.setItem('gh_token', tok.trim());
+        showCopyToast('Token 已保存');
+        doSave(tok.trim());
+      }
+    });
   }
 
   function showCopyToast(msg){
@@ -1316,33 +1325,50 @@ input[type="password"]{
 
   // ==================== 新建目录/文档 ====================
   var newCallback = null;
+  var newMode = 'input'; // 'input' | 'confirm'
 
   function showNewModal(title, label, cb){
+    newMode = 'input';
     newCallback = cb;
-    window.__newCb = cb; // debug
     $('#newTitle').textContent = title;
+    $('#newMsg').style.display = 'none';
+    $('#newFormGroup').style.display = 'block';
     $('#newLabel').textContent = label;
     $('#newInput').value = '';
     $('#newOverlay').classList.add('show');
     setTimeout(function(){ $('#newInput').focus(); }, 100);
   }
 
+  function showConfirm(title, msg, cb){
+    newMode = 'confirm';
+    newCallback = cb;
+    $('#newTitle').textContent = title;
+    $('#newFormGroup').style.display = 'none';
+    $('#newMsg').textContent = msg;
+    $('#newMsg').style.display = 'block';
+    $('#newOverlay').classList.add('show');
+  }
+
   function hideNewModal(){
     $('#newOverlay').classList.remove('show');
     newCallback = null;
-    window.__newCb = null;
   }
 
   document.addEventListener('click', function(e){
     if (e.target.id === 'newConfirm' || (e.target.closest && e.target.closest('#newConfirm'))) {
-      var name = $('#newInput').value.trim();
-      if (!name) return;
-      var cb = newCallback || window.__newCb;
-      hideNewModal();
-      if (cb) { cb(name); }
-      else { console.log('no callback!'); }
+      if (newMode === 'confirm') {
+        hideNewModal();
+        if (newCallback) newCallback(true);
+      } else {
+        var name = $('#newInput').value.trim();
+        if (!name) return;
+        var cb = newCallback;
+        hideNewModal();
+        if (cb) cb(name);
+      }
     }
     if (e.target.id === 'newCancel' || (e.target.closest && e.target.closest('#newCancel'))) {
+      if (newMode === 'confirm' && newCallback) newCallback(false);
       hideNewModal();
     }
   });
@@ -1384,8 +1410,12 @@ input[type="password"]{
   // Reusable GitHub save function
   function doSaveData(msg, callback){
     var token = localStorage.getItem('gh_token');
-    if (!token) { token = prompt('请输入 GitHub Token：'); if (token) localStorage.setItem('gh_token', token); }
-    if (!token) return;
+    if (!token) {
+      showNewModal('GitHub Token', 'Personal Access Token', function(t){
+        if (t) { localStorage.setItem('gh_token', t); doSaveData(msg, callback); }
+      });
+      return;
+    }
 
     var body = JSON.stringify(mockData, null, 2);
     var btn = $('#btnEditSave');
