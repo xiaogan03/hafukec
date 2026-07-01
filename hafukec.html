@@ -558,7 +558,7 @@ input[type="password"]{
   var mockData = { folders: [], documents: {} };
 
   function loadData() {
-    return fetch('https://raw.githubusercontent.com/xiaogan03/hafukec/master/data.json')
+    return fetch('./data.json')
       .then(function(res) { return res.json(); })
       .then(function(data) {
         mockData = data;
