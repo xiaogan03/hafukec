@@ -430,6 +430,13 @@ input[type="password"]{
 .edit-savebar .btn-save:hover{background:#1a4d8f;box-shadow:0 0.04rem 0.2rem rgba(35,98,175,0.3);}
 .edit-savebar .btn-save:disabled{opacity:0.5;pointer-events:none;}
 
+/* lock toggle in savebar */
+.edit-savebar .lock-toggle{display:flex;align-items:center;gap:0.12rem;cursor:pointer;margin-right:auto;font-family:'fzltzh';}
+.edit-savebar .lock-toggle input[type=checkbox]{width:0.3rem;height:0.3rem;accent-color:#2362af;cursor:pointer;}
+.edit-savebar .lock-label{font-size:0.26rem;color:#6d7888;user-select:none;}
+.edit-savebar .lock-password{width:3rem;height:0.7rem;padding:0 0.2rem;border:1px solid #d0d0d0;border-radius:0.08rem;font-size:0.22rem;background:#efefef;color:#555;font-family:'fzltzh';}
+.edit-savebar .lock-password:focus{outline:none;border-color:#2362af;background:#fff;}
+
 /* token prompt (reuses login-box styles) */
 .edit-token-box{display:none;}
 .edit-token-box.show{display:block;}
@@ -489,6 +496,11 @@ input[type="password"]{
     </div>
     <div class="doc-text" id="doc-detail-content"></div>
     <div class="edit-savebar" id="editSavebar">
+      <label class="lock-toggle">
+        <input type="checkbox" id="editLock" onchange="toggleLockPassword()">
+        <span class="lock-label">加密文档</span>
+      </label>
+      <input type="password" class="lock-password" id="editLockPwd" placeholder="访问密钥..." style="display:none;">
       <button class="btn-cancel" onclick="exitEditMode()">取消</button>
       <button class="btn-save" id="btnEditSave" onclick="saveDocument()">保存到 GitHub</button>
     </div>
@@ -994,6 +1006,14 @@ input[type="password"]{
     }
   });
 
+  function findCurrentDoc(){
+    for (var folderId in mockData.documents) {
+      var found = mockData.documents[folderId].find(function(d){ return d.id === state.currentDocId; });
+      if (found) return found;
+    }
+    return null;
+  }
+
   function enterEditMode(){
     editState.active = true;
     editState.editingDocId = state.currentDocId;
@@ -1004,6 +1024,13 @@ input[type="password"]{
     document.execCommand('defaultParagraphSeparator', false, 'p');
     dom.docDetailContent.classList.add('editing');
     dom.docDetailContent.addEventListener('keydown', handleEditKeydown);
+    // Pre-fill lock state
+    var doc = findCurrentDoc();
+    if (doc) {
+      $('#editLock').checked = doc.locked || false;
+      $('#editLockPwd').value = doc.password || '';
+      $('#editLockPwd').style.display = doc.locked ? 'block' : 'none';
+    }
     $('#doc-detail-edit').textContent = '退出编辑';
     $('#doc-detail-edit').classList.add('active');
   }
@@ -1107,9 +1134,16 @@ input[type="password"]{
     var docId = editState.editingDocId;
 
     // Update mockData
+    var locked = $('#editLock').checked;
+    var pwd = $('#editLockPwd').value;
     for (var folderId in mockData.documents) {
       var found = mockData.documents[folderId].find(function(d){ return d.id === docId; });
-      if (found) { found.content = newContent; break; }
+      if (found) {
+        found.content = newContent;
+        found.locked = locked;
+        found.password = locked ? pwd : '';
+        break;
+      }
     }
 
     // Save data.json to GitHub
@@ -1180,6 +1214,10 @@ input[type="password"]{
     setTimeout(function(){ toast.classList.remove('show'); }, 2000);
   }
 
+  window.toggleLockPassword = function(){
+    var checked = $('#editLock').checked;
+    $('#editLockPwd').style.display = checked ? 'block' : 'none';
+  };
   window.exitEditMode = exitEditMode;
   window.saveDocument = saveDocument;
 
