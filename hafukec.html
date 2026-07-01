@@ -1068,7 +1068,7 @@ input[type="password"]{
         URL.revokeObjectURL(url);
       })
       .catch(function(){
-        alert('图片下载失败，请长按图片另存为');
+        showCopyToast('图片下载失败，请长按图片另存为');
       });
   });
 
