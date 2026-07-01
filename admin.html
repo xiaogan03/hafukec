@@ -798,14 +798,15 @@ document.addEventListener('click', function(e){
   } else if (cmd === 'formatBlock') {
     var sel = window.getSelection();
     if (sel.rangeCount > 0) {
-      var node = sel.getRangeAt(0).commonAncestorContainer;
+      var range = sel.getRangeAt(0);
+      var node = range.commonAncestorContainer;
       var el = node.nodeType === 3 ? node.parentElement : node;
-      var tag = arg.toUpperCase();
-      var block = el.closest(tag);
-      if (block) {
+      var block = el.closest(arg.toUpperCase());
+      if (block && block.closest('#ed-content')) {
         var p = document.createElement('p');
-        p.innerHTML = block.innerHTML;
+        while (block.firstChild) { p.appendChild(block.firstChild); }
         block.parentNode.replaceChild(p, block);
+        ed.focus();
       } else {
         document.execCommand(cmd, false, arg);
       }

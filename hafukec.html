@@ -1038,18 +1038,19 @@ input[type="password"]{
     if (cmd === 'insertTable') {
       insertTable();
     } else if (cmd === 'formatBlock') {
-      // Toggle: if already this format, switch back to P
+      // Toggle: if cursor is inside this format, switch back to P
       var sel = window.getSelection();
       if (sel.rangeCount > 0) {
-        var node = sel.getRangeAt(0).commonAncestorContainer;
+        var range = sel.getRangeAt(0);
+        var node = range.commonAncestorContainer;
         var el = node.nodeType === 3 ? node.parentElement : node;
-        var tag = arg.toUpperCase();
-        var block = el.closest(tag);
-        if (block) {
-          // Replace heading element with <p> directly (execCommand unreliable for this)
+        var block = el.closest(arg.toUpperCase());
+        if (block && block.closest('#doc-detail-content')) {
+          // Remove heading by unwrapping: move children up, then replace
           var p = document.createElement('p');
-          p.innerHTML = block.innerHTML;
+          while (block.firstChild) { p.appendChild(block.firstChild); }
           block.parentNode.replaceChild(p, block);
+          dom.docDetailContent.focus();
         } else {
           document.execCommand(cmd, false, arg);
         }
