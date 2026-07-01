@@ -850,21 +850,16 @@ input[type="password"]{
 
   // 列表页返回
   $('#doc-list-back').addEventListener('click', function(){
-    loadData().then(function(){
-      renderFolders();
-      showPage('folder');
-    });
+    renderFolders();
+    showPage('folder');
     state.currentFolderId = '';
     state.currentFolderPassword = '';
   });
 
   // 详情页返回
   $('#doc-detail-back').addEventListener('click', function(){
-    loadData().then(function(){
-      renderFolders();
-      renderDocuments(state.currentFolderId);
-      showPage('doc_list');
-    });
+    renderDocuments(state.currentFolderId);
+    showPage('doc_list');
     state.currentDocId = '';
     state.currentDocPassword = '';
   });
@@ -1193,13 +1188,11 @@ input[type="password"]{
       btn.textContent = '保存到 GitHub';
       showCopyToast('保存成功！返回即可查看更新');
       exitEditMode();
-      // Reload data and refresh all views
-      loadData().then(function(){
-        renderFolders();
-        renderDocuments(state.currentFolderId);
-        loadDocumentDetail(docId);
-        showPage('doc_detail');
-      });
+      // Refresh views from in-memory data (already updated)
+      renderFolders();
+      renderDocuments(state.currentFolderId);
+      loadDocumentDetail(docId);
+      showPage('doc_detail');
     })
     .catch(function(err){
       btn.disabled = false;
