@@ -850,14 +850,21 @@ input[type="password"]{
 
   // 列表页返回
   $('#doc-list-back').addEventListener('click', function(){
-    showPage('folder');
+    loadData().then(function(){
+      renderFolders();
+      showPage('folder');
+    });
     state.currentFolderId = '';
     state.currentFolderPassword = '';
   });
 
   // 详情页返回
   $('#doc-detail-back').addEventListener('click', function(){
-    showPage('doc_list');
+    loadData().then(function(){
+      renderFolders();
+      renderDocuments(state.currentFolderId);
+      showPage('doc_list');
+    });
     state.currentDocId = '';
     state.currentDocPassword = '';
   });
