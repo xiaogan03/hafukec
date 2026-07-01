@@ -516,6 +516,8 @@ function showDocEdit(doc, idx){
   html += '<span class="sep"></span>';
   html += '<button data-fmt="insertUnorderedList" title="列表" onmousedown="event.preventDefault()">•</button>';
   html += '<button data-fmt="insertHorizontalRule" title="分隔线" onmousedown="event.preventDefault()">—</button>';
+  html += '<span class="sep"></span>';
+  html += '<button data-fmt="insertTable" title="插入表格" onmousedown="event.preventDefault()">田</button>';
   html += '</div>';
   html += '<div class="content-editor" id="ed-content" contenteditable="true">' + (doc.content || '') + '</div>';
   html += '</div></div>';
@@ -573,6 +575,8 @@ function showAddDoc(){
   html += '<span class="sep"></span>';
   html += '<button data-fmt="insertUnorderedList" title="列表" onmousedown="event.preventDefault()">•</button>';
   html += '<button data-fmt="insertHorizontalRule" title="分隔线" onmousedown="event.preventDefault()">—</button>';
+  html += '<span class="sep"></span>';
+  html += '<button data-fmt="insertTable" title="插入表格" onmousedown="event.preventDefault()">田</button>';
   html += '</div>';
   html += '<div class="content-editor" id="ed-content" contenteditable="true"></div>';
   html += '</div></div>';
@@ -746,6 +750,24 @@ dom.folderSelect.addEventListener('change', function(){
   renderDocList();
 });
 
+// Insert doc-table at cursor
+function insertTableAtCursor(ed){
+  var rows = prompt('表格行数（不含表头）:', '3');
+  if (!rows) return;
+  rows = parseInt(rows) || 3;
+  var cols = parseInt(prompt('表格列数:', '2')) || 2;
+  var html = '<table class="doc-table"><tr>';
+  for (var c = 0; c < cols; c++) html += '<th>表头' + (c+1) + '</th>';
+  html += '</tr>';
+  for (var r = 0; r < rows; r++) {
+    html += '<tr>';
+    for (var c = 0; c < cols; c++) html += '<td>内容</td>';
+    html += '</tr>';
+  }
+  html += '</table><p>&#8203;</p>';
+  document.execCommand('insertHTML', false, html);
+}
+
 // Format toolbar event delegation
 document.addEventListener('click', function(e){
   var btn = e.target.closest('[data-fmt]');
@@ -755,7 +777,11 @@ document.addEventListener('click', function(e){
   var arg = btn.getAttribute('data-fmt-arg') || null;
   var ed = document.getElementById('ed-content');
   if (ed) ed.focus();
-  document.execCommand(cmd, false, arg);
+  if (cmd === 'insertTable') {
+    insertTableAtCursor(ed);
+  } else {
+    document.execCommand(cmd, false, arg);
+  }
 });
 
 // ==================== Global functions ====================
