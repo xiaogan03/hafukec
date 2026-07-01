@@ -59,8 +59,8 @@
       "id": "folder_1782935292941",
       "name": "小甘",
       "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png",
-      "locked": false,
-      "password": ""
+      "locked": true,
+      "password": "111"
     }
   ],
   "documents": {
