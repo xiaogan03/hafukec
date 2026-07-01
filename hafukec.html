@@ -245,6 +245,13 @@ input[type="password"]{
   width:2.87rem;height:0.68rem;color:#ffffff;font-family:'fzltzh';
 }
 
+/* folder action buttons */
+.folder-actions{position:absolute;bottom:0.16rem;right:0.2rem;display:flex;gap:0.1rem;opacity:0;transition:opacity 0.15s;}
+.folder-ct a:hover .folder-actions{opacity:1;}
+.folder-btn{width:0.56rem;height:0.56rem;border:1px solid #c5daec;border-radius:0.08rem;background:rgba(255,255,255,0.9);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.24rem;color:#5894de;transition:all 0.15s;position:relative;z-index:5;}
+.folder-btn:hover{background:#e8f4ff;border-color:#2362af;color:#2362af;}
+.folder-btn.del:hover{background:#fff5f5;border-color:#d32f2f;color:#d32f2f;}
+
 .doc-tit{
   background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/tit_bg1.png) no-repeat 50% 50%;
   background-size:38.4rem auto;width:100%;height:100%;
@@ -682,15 +689,20 @@ input[type="password"]{
   // ==================== 渲染函数 ====================
   function renderFolders() {
     var html = '';
-    mockData.folders.forEach(function(item){
+    mockData.folders.forEach(function(item, idx){
       var lockedClass = item.locked ? 'folder-suo' : '';
       var lockedContent = item.locked
         ? '<p class="suo-txt1"><i></i><span>加密·需要访问密钥</span></p><p class="suo-txt2"><i></i><span>ENCRYPTED</span></p>'
         : '';
-      html += '<a href="javascript:;" data-folder="' + item.id + '" data-name="' + item.name + '" data-locked="' + (item.locked ? '1' : '0') + '" data-password="' + (item.password || '') + '" class="' + lockedClass + '">'
+      var lockIcon = item.locked ? '🔓' : '🔒';
+      html += '<a href="javascript:;" data-folder="' + item.id + '" data-name="' + item.name + '" data-locked="' + (item.locked ? '1' : '0') + '" data-password="' + (item.password || '') + '" class="' + lockedClass + '" style="position:relative;">'
         + '<img src="' + item.icon + '" alt="">'
         + '<p class="folder-name">' + item.name + '</p>'
         + lockedContent
+        + '<div class="folder-actions">'
+        + '<button class="folder-btn lock-btn" data-action="lock" data-idx="' + idx + '" title="切换加密">' + lockIcon + '</button>'
+        + '<button class="folder-btn del" data-action="delfolder" data-idx="' + idx + '" title="删除">✕</button>'
+        + '</div>'
         + '</a>';
     });
     dom.folderCt.innerHTML = html;
@@ -796,6 +808,41 @@ input[type="password"]{
 
   // 点击目录（事件委托）
   dom.folderCt.addEventListener('click', function(e){
+    // Handle action buttons first
+    var btn = e.target.closest('.folder-btn');
+    if (btn) {
+      e.stopPropagation();
+      e.preventDefault();
+      var action = btn.getAttribute('data-action');
+      var idx = parseInt(btn.getAttribute('data-idx'));
+      if (action === 'delfolder') {
+        var folder = mockData.folders[idx];
+        if (!confirm('确定删除目录 "' + folder.name + '" 及其中所有文档？此操作不可恢复。')) return;
+        var fid = folder.id;
+        mockData.folders.splice(idx, 1);
+        if (mockData.documents && mockData.documents[fid]) delete mockData.documents[fid];
+        doSaveData('删除目录: ' + folder.name, function(){ renderFolders(); });
+        return;
+      }
+      if (action === 'lock') {
+        var folder = mockData.folders[idx];
+        if (folder.locked) {
+          folder.locked = false;
+          folder.password = '';
+          doSaveData('解锁目录: ' + folder.name, function(){ renderFolders(); });
+        } else {
+          var pwd = prompt('请输入该目录的访问密钥：');
+          if (!pwd || !pwd.trim()) return;
+          folder.locked = true;
+          folder.password = pwd.trim();
+          doSaveData('加密目录: ' + folder.name, function(){ renderFolders(); });
+        }
+        return;
+      }
+    }
+    // Normal folder click
+    var a = e.target.closest('a');
+    if (!a) return;
     var a = e.target.closest('a');
     if (!a) return;
     var folderId = a.getAttribute('data-folder');
