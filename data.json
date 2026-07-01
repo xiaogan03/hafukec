@@ -122,7 +122,7 @@
         "id": "accident_report2",
         "name": "总部选址综合报告",
         "type": "text",
-        "locked": true,
+        "locked": false,
         "password": "",
         "src": "",
         "content": "<h2>哈夫克总部选址综合报告</h2><h3>候选地点对比</h3><table class=\"doc-table\"><tbody><tr><th>地点</th><th>地址稳定</th><th>供电保障</th><th>交通便利</th><th>综合评价</th></tr><tr><td>A区-山谷基地的</td><td>优</td><td>中</td><td>差</td><td>备选</td></tr><tr><td>B区-郊区工业园区</td><td>优</td><td>优</td><td>优</td><td>推荐</td></tr><tr><td>C区-滨海试验场</td><td>中</td><td>优</td><td>中</td><td>备选</td></tr></tbody></table><h3>​推荐结论</h3><p><span style=\"font-family: fzlth, simhei, tahoma, 宋体, 黑体, sans-serif;\">综合考量后推荐B区-城郊工业园区作为哈夫克分部首选地址。该区域基础设施完善，距离总部仅40分钟车程，且周边配套可满足500人规模运营需求。</span></p>"
