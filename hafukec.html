@@ -570,8 +570,13 @@ input[type="password"]{
   var mockData = { folders: [], documents: {} };
 
   function loadData() {
-    return fetch('./data.json')
+    // Try raw first (fast), fallback to Pages CDN
+    return fetch('https://raw.githubusercontent.com/xiaogan03/hafukec/master/data.json', { cache: 'no-cache' })
       .then(function(res) { return res.json(); })
+      .catch(function(){
+        console.log('raw 源不可用，使用 CDN 缓存');
+        return fetch('./data.json').then(function(res){ return res.json(); });
+      })
       .then(function(data) {
         mockData = data;
         FOLDER_ICON = data.folderIcon || FOLDER_ICON;
