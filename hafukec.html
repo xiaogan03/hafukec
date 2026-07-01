@@ -1021,8 +1021,7 @@ input[type="password"]{
     editState.active = true;
     editState.editingDocId = state.currentDocId;
     editState.editingDocName = dom.docDetailTitle.textContent;
-    $('#editToolbar');
-    $('#editSavebar');
+    $('#editSavebar').classList.add('show');
     dom.docDetailContent.setAttribute('contenteditable', 'true');
     document.execCommand('defaultParagraphSeparator', false, 'p');
     dom.docDetailContent.classList.add('editing');
@@ -1047,8 +1046,7 @@ input[type="password"]{
 
   function exitEditMode(){
     editState.active = false;
-    $('#editToolbar');
-    $('#editSavebar');
+    $('#editSavebar').classList.remove('show');
     dom.docDetailContent.removeAttribute('contenteditable');
     dom.docDetailContent.removeEventListener('keydown', handleEditKeydown);
     dom.docDetailContent.classList.remove('editing');
@@ -1059,7 +1057,7 @@ input[type="password"]{
   }
 
   // Format toolbar event delegation (mousedown to capture selection before it clears)
-  $('#editToolbar').addEventListener('mousedown', function(e){
+  $('#editSavebar').addEventListener('mousedown', function(e){
     var btn = e.target.closest('[data-fmt]');
     if (!btn) return;
     var cmd = btn.getAttribute('data-fmt');
