@@ -1038,24 +1038,43 @@ input[type="password"]{
     if (cmd === 'insertTable') {
       insertTable();
     } else if (cmd === 'formatBlock') {
-      // Toggle: if cursor is inside this format, switch back to P
       var sel = window.getSelection();
-      if (sel.rangeCount > 0) {
-        var range = sel.getRangeAt(0);
-        var node = range.commonAncestorContainer;
-        var el = node.nodeType === 3 ? node.parentElement : node;
-        var block = el.closest(arg.toUpperCase());
-        if (block && block.closest('#doc-detail-content')) {
-          // Remove heading by unwrapping: move children up, then replace
-          var p = document.createElement('p');
-          while (block.firstChild) { p.appendChild(block.firstChild); }
-          block.parentNode.replaceChild(p, block);
-          dom.docDetailContent.focus();
+      if (sel.rangeCount === 0) { document.execCommand(cmd, false, arg); return; }
+      var range = sel.getRangeAt(0);
+      var node = range.commonAncestorContainer;
+      var el = node.nodeType === 3 ? node.parentElement : node;
+      var ed = dom.docDetailContent;
+      // Find the nearest heading ancestor
+      var curHeading = el.closest('h1,h2,h3,h4,h5,h6');
+      curHeading = curHeading && curHeading.closest('#doc-detail-content') ? curHeading : null;
+
+      if (arg === 'p') {
+        // P button: if inside any heading, replace it
+        if (curHeading) {
+          var np = document.createElement('p');
+          while (curHeading.firstChild) { np.appendChild(curHeading.firstChild); }
+          curHeading.parentNode.replaceChild(np, curHeading);
+          ed.focus();
         } else {
-          document.execCommand(cmd, false, arg);
+          document.execCommand(cmd, false, arg); // apply to text
         }
       } else {
-        document.execCommand(cmd, false, arg);
+        // H2/H3 button
+        if (curHeading && curHeading.tagName.toLowerCase() === arg) {
+          // Already this heading → toggle off to P
+          var np = document.createElement('p');
+          while (curHeading.firstChild) { np.appendChild(curHeading.firstChild); }
+          curHeading.parentNode.replaceChild(np, curHeading);
+          ed.focus();
+        } else if (curHeading) {
+          // Different heading → swap heading tag
+          var nh = document.createElement(arg);
+          while (curHeading.firstChild) { nh.appendChild(curHeading.firstChild); }
+          curHeading.parentNode.replaceChild(nh, curHeading);
+          ed.focus();
+        } else {
+          document.execCommand(cmd, false, arg); // apply to plain text
+        }
       }
     } else {
       document.execCommand(cmd, false, arg);

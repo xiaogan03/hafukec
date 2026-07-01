@@ -797,21 +797,36 @@ document.addEventListener('click', function(e){
     insertTableAtCursor(ed);
   } else if (cmd === 'formatBlock') {
     var sel = window.getSelection();
-    if (sel.rangeCount > 0) {
-      var range = sel.getRangeAt(0);
-      var node = range.commonAncestorContainer;
-      var el = node.nodeType === 3 ? node.parentElement : node;
-      var block = el.closest(arg.toUpperCase());
-      if (block && block.closest('#ed-content')) {
-        var p = document.createElement('p');
-        while (block.firstChild) { p.appendChild(block.firstChild); }
-        block.parentNode.replaceChild(p, block);
+    if (sel.rangeCount === 0) { document.execCommand(cmd, false, arg); return; }
+    var range = sel.getRangeAt(0);
+    var node = range.commonAncestorContainer;
+    var el = node.nodeType === 3 ? node.parentElement : node;
+    var curHeading = el.closest('h1,h2,h3,h4,h5,h6');
+    curHeading = curHeading && curHeading.closest('#ed-content') ? curHeading : null;
+
+    if (arg === 'p') {
+      if (curHeading) {
+        var np = document.createElement('p');
+        while (curHeading.firstChild) { np.appendChild(curHeading.firstChild); }
+        curHeading.parentNode.replaceChild(np, curHeading);
         ed.focus();
       } else {
         document.execCommand(cmd, false, arg);
       }
     } else {
-      document.execCommand(cmd, false, arg);
+      if (curHeading && curHeading.tagName.toLowerCase() === arg) {
+        var np = document.createElement('p');
+        while (curHeading.firstChild) { np.appendChild(curHeading.firstChild); }
+        curHeading.parentNode.replaceChild(np, curHeading);
+        ed.focus();
+      } else if (curHeading) {
+        var nh = document.createElement(arg);
+        while (curHeading.firstChild) { nh.appendChild(curHeading.firstChild); }
+        curHeading.parentNode.replaceChild(nh, curHeading);
+        ed.focus();
+      } else {
+        document.execCommand(cmd, false, arg);
+      }
     }
   } else {
     document.execCommand(cmd, false, arg);
