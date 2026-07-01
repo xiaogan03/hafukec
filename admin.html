@@ -154,7 +154,7 @@ button{cursor:pointer;}
       <span style="color:#d32f2f;">Token 仅保存在你的浏览器 localStorage 中，不上传到任何服务器。</span>
     </p>
     <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-    <button onclick="saveToken()">保存并加载数据</button>
+    <button id="saveTokenBtn">保存并加载数据</button>
   </div>
 </div>
 
@@ -213,6 +213,15 @@ function utf8ToBase64(str) {
     bin += String.fromCharCode(bytes[i]);
   }
   return btoa(bin);
+}
+
+function base64ToUtf8(str) {
+  var binary = atob(str.replace(/\s/g, ''));
+  var bytes = new Uint8Array(binary.length);
+  for (var i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new TextDecoder().decode(bytes);
 }
 
 // ==================== Toast ====================
@@ -300,7 +309,7 @@ function loadFromGitHub(){
   ghApi('GET', '/repos/' + OWNER + '/' + REPO + '/contents/' + FILE_PATH + '?ref=' + BRANCH)
     .then(function(res){
       currentSha = res.sha;
-      var content = atob(res.content.replace(/\s/g, ''));
+      var content = base64ToUtf8(res.content);
       data = JSON.parse(content);
       dom.editStatus.textContent = '已加载 (SHA: ' + currentSha.substr(0,7) + ')';
       dom.saveBtn.disabled = false;
@@ -728,6 +737,7 @@ window.saveDocEdit = saveDocEdit;
 window.cancelEdit = cancelEdit;
 
 // ==================== Init ====================
+document.getElementById('saveTokenBtn').addEventListener('click', saveToken);
 setupToken();
 })();
 </script>
