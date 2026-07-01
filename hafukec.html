@@ -1184,10 +1184,12 @@ input[type="password"]{
     .then(function(){
       btn.disabled = false;
       btn.textContent = '保存到 GitHub';
-      showCopyToast('保存成功！1-2分钟后刷新可见');
+      showCopyToast('保存成功！返回即可查看更新');
       exitEditMode();
-      // Reload data so next view is fresh
+      // Reload data and refresh all views
       loadData().then(function(){
+        renderFolders();
+        renderDocuments(state.currentFolderId);
         loadDocumentDetail(docId);
         showPage('doc_detail');
       });
