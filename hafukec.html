@@ -1143,6 +1143,29 @@ input[type="password"]{
     if (e.key === 'Enter') {
       e.preventDefault();
       saveSnapshot();
+      dom.docDetailContent.focus();
+      // If inside a heading, insert a new paragraph after it
+      var sel = window.getSelection();
+      if (sel.rangeCount > 0) {
+        var node = sel.getRangeAt(0).commonAncestorContainer;
+        var el = node.nodeType === 3 ? node.parentElement : node;
+        var h = el.closest('h1,h2,h3,h4,h5,h6');
+        if (h) {
+          var p = document.createElement('p');
+          p.innerHTML = '<br>';
+          if (h.nextSibling) {
+            h.parentNode.insertBefore(p, h.nextSibling);
+          } else {
+            h.parentNode.appendChild(p);
+          }
+          var range = document.createRange();
+          range.setStart(p, 0);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+          return;
+        }
+      }
       document.execCommand('insertParagraph', false, null);
     } else if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
       if (undoStack.length > 0) {
