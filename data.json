@@ -58,9 +58,9 @@
     {
       "id": "folder_1782936958054",
       "name": "效果",
-      "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder2.png",
-      "locked": true,
-      "password": "111"
+      "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png",
+      "locked": false,
+      "password": ""
     }
   ],
   "documents": {
