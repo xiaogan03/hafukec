@@ -1153,9 +1153,13 @@ input[type="password"]{
   function insertTable(){
     var sel = window.getSelection();
     if (sel.rangeCount > 0) {
-      var node = sel.getRangeAt(0).commonAncestorContainer;
+      var range = sel.getRangeAt(0);
+      var node = range.commonAncestorContainer;
       var el = node.nodeType === 3 ? node.parentElement : node;
-      if (el.closest('h1,h2,h3,h4,h5,h6')) {
+      // Only skip paragraph if cursor is at start of an empty <p>
+      var p = el.closest('p');
+      var isEmptyP = p && p.textContent.trim() === '' && range.collapsed && range.startOffset === 0;
+      if (!isEmptyP) {
         document.execCommand('insertParagraph', false, null);
       }
     }

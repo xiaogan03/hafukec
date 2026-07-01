@@ -770,9 +770,12 @@ dom.folderSelect.addEventListener('change', function(){
 function insertTableAtCursor(ed){
   var sel = window.getSelection();
   if (sel.rangeCount > 0) {
-    var node = sel.getRangeAt(0).commonAncestorContainer;
+    var range = sel.getRangeAt(0);
+    var node = range.commonAncestorContainer;
     var el = node.nodeType === 3 ? node.parentElement : node;
-    if (el.closest('h1,h2,h3,h4,h5,h6')) {
+    var p = el.closest('p');
+    var isEmptyP = p && p.textContent.trim() === '' && range.collapsed && range.startOffset === 0;
+    if (!isEmptyP) {
       document.execCommand('insertParagraph', false, null);
     }
   }
