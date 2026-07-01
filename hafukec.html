@@ -1037,6 +1037,21 @@ input[type="password"]{
     dom.docDetailContent.focus();
     if (cmd === 'insertTable') {
       insertTable();
+    } else if (cmd === 'formatBlock') {
+      // Toggle: if already this format, switch back to P
+      var sel = window.getSelection();
+      if (sel.rangeCount > 0) {
+        var node = sel.getRangeAt(0).commonAncestorContainer;
+        var el = node.nodeType === 3 ? node.parentElement : node;
+        var block = el.closest(arg.toUpperCase());
+        if (block) {
+          document.execCommand('formatBlock', false, 'p');
+        } else {
+          document.execCommand(cmd, false, arg);
+        }
+      } else {
+        document.execCommand(cmd, false, arg);
+      }
     } else {
       document.execCommand(cmd, false, arg);
     }

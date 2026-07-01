@@ -795,6 +795,16 @@ document.addEventListener('click', function(e){
   if (ed) ed.focus();
   if (cmd === 'insertTable') {
     insertTableAtCursor(ed);
+  } else if (cmd === 'formatBlock') {
+    var sel = window.getSelection();
+    if (sel.rangeCount > 0) {
+      var node = sel.getRangeAt(0).commonAncestorContainer;
+      var el = node.nodeType === 3 ? node.parentElement : node;
+      var block = el.closest(arg.toUpperCase());
+      document.execCommand('formatBlock', false, block ? 'p' : arg);
+    } else {
+      document.execCommand(cmd, false, arg);
+    }
   } else {
     document.execCommand(cmd, false, arg);
   }
