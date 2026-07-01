@@ -1318,8 +1318,8 @@ input[type="password"]{
   var newCallback = null;
 
   function showNewModal(title, label, cb){
-    console.log('showNewModal called, cb:', typeof cb);
     newCallback = cb;
+    window.__newCb = cb; // debug
     $('#newTitle').textContent = title;
     $('#newLabel').textContent = label;
     $('#newInput').value = '';
@@ -1330,16 +1330,21 @@ input[type="password"]{
   function hideNewModal(){
     $('#newOverlay').classList.remove('show');
     newCallback = null;
+    window.__newCb = null;
   }
 
-  $('#newConfirm').addEventListener('click', function(){
-    var name = $('#newInput').value.trim();
-    console.log('newConfirm clicked, name:', name);
-    if (!name) return;
-    hideNewModal();
-    console.log('calling callback');
-    if (newCallback) { console.log('has callback'); newCallback(name); }
-    else { console.log('no callback!'); }
+  document.addEventListener('click', function(e){
+    if (e.target.id === 'newConfirm' || (e.target.closest && e.target.closest('#newConfirm'))) {
+      var name = $('#newInput').value.trim();
+      if (!name) return;
+      var cb = newCallback || window.__newCb;
+      hideNewModal();
+      if (cb) { cb(name); }
+      else { console.log('no callback!'); }
+    }
+    if (e.target.id === 'newCancel' || (e.target.closest && e.target.closest('#newCancel'))) {
+      hideNewModal();
+    }
   });
 
   $('#newCancel').addEventListener('click', hideNewModal);
