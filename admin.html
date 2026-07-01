@@ -306,25 +306,33 @@ function ghApi(method, path, body){
 
 function loadFromGitHub(){
   dom.editStatus.textContent = '加载中...';
-  ghApi('GET', '/repos/' + OWNER + '/' + REPO + '/contents/' + FILE_PATH + '?ref=' + BRANCH)
-    .then(function(res){
-      currentSha = res.sha;
-      var content = base64ToUtf8(res.content);
-      data = JSON.parse(content);
-      dom.editStatus.textContent = '已加载 (SHA: ' + currentSha.substr(0,7) + ')';
-      dom.saveBtn.disabled = false;
-      renderAll();
-      showToast('数据加载成功', 'success');
-    })
-    .catch(function(err){
-      dom.editStatus.textContent = '加载失败';
-      showToast('加载失败: ' + err.message, 'error');
-      if (err.status === 401) {
-        localStorage.removeItem('gh_token');
-        token = '';
-        setupToken();
-      }
-    });
+
+  // 加载数据：直接用 raw URL，无编码问题
+  var dataUrl = 'https://raw.githubusercontent.com/' + OWNER + '/' + REPO + '/' + BRANCH + '/' + FILE_PATH;
+  // 获取 SHA：用 GitHub API（保存时需要）
+  var apiUrl = '/repos/' + OWNER + '/' + REPO + '/contents/' + FILE_PATH + '?ref=' + BRANCH;
+
+  Promise.all([
+    fetch(dataUrl).then(function(r){ return r.json(); }),
+    ghApi('GET', apiUrl).then(function(r){ return r.sha; })
+  ])
+  .then(function(results){
+    data = results[0];
+    currentSha = results[1];
+    dom.editStatus.textContent = '已加载 (SHA: ' + currentSha.substr(0,7) + ')';
+    dom.saveBtn.disabled = false;
+    renderAll();
+    showToast('数据加载成功', 'success');
+  })
+  .catch(function(err){
+    dom.editStatus.textContent = '加载失败';
+    showToast('加载失败: ' + err.message, 'error');
+    if (err.status === 401) {
+      localStorage.removeItem('gh_token');
+      token = '';
+      setupToken();
+    }
+  });
 }
 
 function reloadFromGitHub(){
