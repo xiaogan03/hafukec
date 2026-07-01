@@ -768,6 +768,7 @@ dom.folderSelect.addEventListener('change', function(){
 
 // Insert doc-table at cursor
 function insertTableAtCursor(ed){
+  document.execCommand('insertParagraph', false, null);
   var rows = prompt('表格行数（不含表头）:', '3');
   if (!rows) return;
   rows = parseInt(rows) || 3;

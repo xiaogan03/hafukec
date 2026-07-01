@@ -1151,6 +1151,7 @@ input[type="password"]{
   });
 
   function insertTable(){
+    document.execCommand('insertParagraph', false, null);
     var rows = parseInt(prompt('表格行数（不含表头）:', '3')) || 3;
     var cols = parseInt(prompt('表格列数:', '2')) || 2;
     var html = '<table class=\"doc-table\"><tr>';
