@@ -804,26 +804,22 @@ document.addEventListener('click', function(e){
     var curHeading = el.closest('h1,h2,h3,h4,h5,h6');
     curHeading = curHeading && curHeading.closest('#ed-content') ? curHeading : null;
 
+    function replaceWith(el, tag) {
+      var n = document.createElement(tag);
+      while (el.firstChild) { n.appendChild(el.firstChild); }
+      var icons = n.querySelectorAll('i');
+      for (var i = 0; i < icons.length; i++) { icons[i].remove(); }
+      el.parentNode.replaceChild(n, el);
+      ed.focus();
+    }
     if (arg === 'p') {
-      if (curHeading) {
-        var np = document.createElement('p');
-        while (curHeading.firstChild) { np.appendChild(curHeading.firstChild); }
-        curHeading.parentNode.replaceChild(np, curHeading);
-        ed.focus();
-      } else {
-        document.execCommand(cmd, false, arg);
-      }
+      if (curHeading) { replaceWith(curHeading, 'p'); }
+      else { document.execCommand(cmd, false, arg); }
     } else {
       if (curHeading && curHeading.tagName.toLowerCase() === arg) {
-        var np = document.createElement('p');
-        while (curHeading.firstChild) { np.appendChild(curHeading.firstChild); }
-        curHeading.parentNode.replaceChild(np, curHeading);
-        ed.focus();
+        replaceWith(curHeading, 'p');
       } else if (curHeading) {
-        var nh = document.createElement(arg);
-        while (curHeading.firstChild) { nh.appendChild(curHeading.firstChild); }
-        curHeading.parentNode.replaceChild(nh, curHeading);
-        ed.focus();
+        replaceWith(curHeading, arg);
       } else {
         document.execCommand(cmd, false, arg);
       }

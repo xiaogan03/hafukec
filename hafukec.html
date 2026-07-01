@@ -1048,32 +1048,24 @@ input[type="password"]{
       var curHeading = el.closest('h1,h2,h3,h4,h5,h6');
       curHeading = curHeading && curHeading.closest('#doc-detail-content') ? curHeading : null;
 
+      function replaceWith(el, tag) {
+        var n = document.createElement(tag);
+        while (el.firstChild) { n.appendChild(el.firstChild); }
+        var icons = n.querySelectorAll('i');
+        for (var i = 0; i < icons.length; i++) { icons[i].remove(); }
+        el.parentNode.replaceChild(n, el);
+        ed.focus();
+      }
       if (arg === 'p') {
-        // P button: if inside any heading, replace it
-        if (curHeading) {
-          var np = document.createElement('p');
-          while (curHeading.firstChild) { np.appendChild(curHeading.firstChild); }
-          curHeading.parentNode.replaceChild(np, curHeading);
-          ed.focus();
-        } else {
-          document.execCommand(cmd, false, arg); // apply to text
-        }
+        if (curHeading) { replaceWith(curHeading, 'p'); }
+        else { document.execCommand(cmd, false, arg); }
       } else {
-        // H2/H3 button
         if (curHeading && curHeading.tagName.toLowerCase() === arg) {
-          // Already this heading → toggle off to P
-          var np = document.createElement('p');
-          while (curHeading.firstChild) { np.appendChild(curHeading.firstChild); }
-          curHeading.parentNode.replaceChild(np, curHeading);
-          ed.focus();
+          replaceWith(curHeading, 'p');
         } else if (curHeading) {
-          // Different heading → swap heading tag
-          var nh = document.createElement(arg);
-          while (curHeading.firstChild) { nh.appendChild(curHeading.firstChild); }
-          curHeading.parentNode.replaceChild(nh, curHeading);
-          ed.focus();
+          replaceWith(curHeading, arg);
         } else {
-          document.execCommand(cmd, false, arg); // apply to plain text
+          document.execCommand(cmd, false, arg);
         }
       }
     } else {
