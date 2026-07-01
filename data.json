@@ -6,13 +6,55 @@
   "folderIcon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png",
   "folderIconLocked": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder2.png",
   "folders": [
-    { "id": "accident", "name": "人员伤亡事故调查", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder2.png", "locked": true, "password": "123" },
-    { "id": "location", "name": "哈夫克分部选址报告", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png", "locked": false, "password": "" },
-    { "id": "nuclear", "name": "核电招聘部", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png", "locked": false, "password": "" },
-    { "id": "alpha", "name": "脑机α原型机", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png", "locked": false, "password": "" },
-    { "id": "draft", "name": "草稿", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png", "locked": false, "password": "" },
-    { "id": "gunmod", "name": "改枪码", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png", "locked": false, "password": "" },
-    { "id": "thesis", "name": "毕业设计", "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png", "locked": false, "password": "" }
+    {
+      "id": "accident",
+      "name": "人员伤亡事故调查",
+      "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder2.png",
+      "locked": true,
+      "password": "123"
+    },
+    {
+      "id": "location",
+      "name": "哈夫克分部选址报告",
+      "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png",
+      "locked": false,
+      "password": ""
+    },
+    {
+      "id": "nuclear",
+      "name": "核电招聘部",
+      "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png",
+      "locked": false,
+      "password": ""
+    },
+    {
+      "id": "alpha",
+      "name": "脑机α原型机",
+      "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png",
+      "locked": false,
+      "password": ""
+    },
+    {
+      "id": "draft",
+      "name": "草稿",
+      "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png",
+      "locked": false,
+      "password": ""
+    },
+    {
+      "id": "gunmod",
+      "name": "改枪码",
+      "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png",
+      "locked": false,
+      "password": ""
+    },
+    {
+      "id": "thesis",
+      "name": "毕业设计",
+      "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png",
+      "locked": false,
+      "password": ""
+    }
   ],
   "documents": {
     "thesis": [
@@ -51,8 +93,8 @@
         "id": "accident_diary",
         "name": "工作个人日记",
         "type": "text",
-        "locked": false,
-        "password": "",
+        "locked": true,
+        "password": "111",
         "src": "",
         "content": "<h2><span>【私密文件-代号C】</span></h2><p>雇员编号：089376423<br>岗位：设施外围巡逻组</p><h3><i></i><span>4月13日 | 天气：阴 | 夜班</span></h3><p>今晚的外围巡视极其压抑，连虫鸣声都听不见。<br>凌晨一点左右，我巡查到北侧监控盲区那片林地边缘。就在手电筒光束扫过灌木丛的瞬间，我发誓我看到了一双眼睛，而且那绝对不是普通野生动物瞳孔的反光，我能看出来它在观察我，甚至说在审视我。我停在原地足足一分钟没敢动弹，直到一阵冷风吹过来我才发现自己后背全被冷汗浸透了。</p><h3><i></i><span>4月14日 | 天气：晴 | 白班</span></h3><p>大白天的外围总算让人能喘口气。<br>下午巡逻到东侧河边水闸附近时，碰见一个陌生人，不知道他怎么越过监控网到附近的。我喊了一嗓子，他远远地还冲我招了招手。他手里举着带稳定器的微单相机，一边顺着河岸走一边对着镜头说话。我例行上去询问，毕竟这片荒郊野岭的，任何人都显得可疑。他解释自己是一名短视频UP主，来取景时迷了路，我查看了下他的账号：3707006600874797。没发现什么疑点，但我还是警告了他，让他离这片区域远点，毕竟如果是别的同事，他现在可能已经吃上枪子儿了。</p><h3><i></i><span>4月15日 | 天气：多云转阵雨 | 夜班</span></h3><p>它又来了。<br>今晚巡线到一半，那种被注视的强烈直觉再次出现。我猛地一转头，就在不到五十米外的树影深处，那双红色的眼睛再次死死锁定了我的位置。这一次我壮着胆子，立刻把战术手电调到最强档位，直接对着那个方向照了过去。<br>结果光柱打过去的瞬间，那双眼睛直接消失了。<br>也是在这一瞬间，我想起来了，白天值班的时候没发现的疑点。<br>他的视频里总是有一只灰白色的大狗，但看见他时，这只狗并不在他身边。<br>明天如果他还在附近出现，我必须抓住他问个明白。</p>"
       }
