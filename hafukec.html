@@ -445,6 +445,20 @@ input[type="password"]{
 /* token prompt (reuses login-box styles) */
 .edit-token-box{display:none;}
 .edit-token-box.show{display:block;}
+
+/* new-item modal */
+.new-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10003;justify-content:center;align-items:center;}
+.new-overlay.show{display:flex;}
+.new-box{width:7.92rem;padding:0.6rem 0.7rem 0.8rem;background:#ffffff;border-radius:0.2rem;box-shadow:0 0 0.5rem rgba(133,150,170,0.5);animation:loginanim 0.5s ease-in-out;}
+.new-title{font-size:0.32rem;color:#202020;text-align:center;font-family:'fzltzh';margin-bottom:0.4rem;}
+.new-box .form-group{margin-bottom:0.4rem;width:100%;}
+.new-box .form-group label{font-size:0.28rem;color:#494949;line-height:0.5rem;margin-bottom:0.16rem;display:block;font-family:'fzltzh';}
+.new-box .form-group input{width:100%;height:0.98rem;border:0.02rem solid #d0d0d0;border-radius:0.1rem;padding:0.1rem 0.3rem;background:#efefef;font-size:0.3rem;color:#555555;font-family:'fzlth';}
+.new-box .form-group input:focus{outline:none;border-color:#2362af;background:#fff;}
+.new-btns{display:flex;justify-content:center;align-items:center;gap:0.4rem;flex-direction:column;}
+.new-btns .login-btn{font-size:0.32rem;}
+.new-cancel{font-size:0.24rem;color:#9fb0cb;font-family:'fzltzh';cursor:pointer;}
+.new-cancel:hover{color:#5894de;}
 </style>
 </head>
 <body>
@@ -538,6 +552,21 @@ input[type="password"]{
     <p class="unlocked-suo"></p>
     <p class="unlocked-tit">Locked</p>
     <p class="unlocked-desc">未解锁</p>
+  </div>
+</div>
+
+<!-- ============ 新建弹窗 ============ -->
+<div class="new-overlay" id="newOverlay">
+  <div class="new-box">
+    <p class="new-title" id="newTitle">新建目录</p>
+    <div class="form-group">
+      <label id="newLabel">目录名称</label>
+      <input type="text" id="newInput" placeholder="请输入名称..." maxlength="50">
+    </div>
+    <div class="new-btns">
+      <a href="javascript:;" class="login-btn" id="newConfirm">确 定</a>
+      <a href="javascript:;" class="new-cancel" id="newCancel">取消</a>
+    </div>
   </div>
 </div>
 
@@ -1286,33 +1315,60 @@ input[type="password"]{
   window.saveDocument = saveDocument;
 
   // ==================== 新建目录/文档 ====================
+  var newCallback = null;
+
+  function showNewModal(title, label, cb){
+    newCallback = cb;
+    $('#newTitle').textContent = title;
+    $('#newLabel').textContent = label;
+    $('#newInput').value = '';
+    $('#newOverlay').classList.add('show');
+    setTimeout(function(){ $('#newInput').focus(); }, 100);
+  }
+
+  function hideNewModal(){
+    $('#newOverlay').classList.remove('show');
+    newCallback = null;
+  }
+
+  $('#newConfirm').addEventListener('click', function(){
+    var name = $('#newInput').value.trim();
+    if (!name) return;
+    hideNewModal();
+    if (newCallback) newCallback(name);
+  });
+
+  $('#newCancel').addEventListener('click', hideNewModal);
+
+  $('#newInput').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') $('#newConfirm').click();
+  });
+
   $('#btnNewFolder').addEventListener('click', function(){
-    var name = prompt('请输入新目录名称：');
-    if (!name || !name.trim()) return;
-    name = name.trim();
-    var id = 'folder_' + Date.now();
-    mockData.folders.push({ id: id, name: name, icon: FOLDER_ICON, locked: false, password: '' });
-    if (!mockData.documents) mockData.documents = {};
-    mockData.documents[id] = [];
-    doSaveData('创建目录: ' + name, function(){
-      renderFolders();
-      showPage('folder');
+    showNewModal('新建目录', '目录名称', function(name){
+      var id = 'folder_' + Date.now();
+      mockData.folders.push({ id: id, name: name, icon: FOLDER_ICON, locked: false, password: '' });
+      if (!mockData.documents) mockData.documents = {};
+      mockData.documents[id] = [];
+      doSaveData('创建目录: ' + name, function(){
+        renderFolders();
+        showPage('folder');
+      });
     });
   });
 
   $('#btnNewDoc').addEventListener('click', function(){
     if (!state.currentFolderId) { showCopyToast('请先选择一个目录'); return; }
-    var name = prompt('请输入新文档名称：');
-    if (!name || !name.trim()) return;
-    name = name.trim();
-    var id = 'doc_' + Date.now();
-    if (!mockData.documents[state.currentFolderId]) mockData.documents[state.currentFolderId] = [];
-    mockData.documents[state.currentFolderId].push({
-      id: id, name: name, type: 'text', locked: false, password: '', src: '',
-      content: '<h2>' + name + '</h2><p></p>'
-    });
-    doSaveData('创建文档: ' + name, function(){
-      loadDocuments(state.currentFolderId);
+    showNewModal('新建文档', '文档名称', function(name){
+      var id = 'doc_' + Date.now();
+      if (!mockData.documents[state.currentFolderId]) mockData.documents[state.currentFolderId] = [];
+      mockData.documents[state.currentFolderId].push({
+        id: id, name: name, type: 'text', locked: false, password: '', src: '',
+        content: '<h2>' + name + '</h2><p></p>'
+      });
+      doSaveData('创建文档: ' + name, function(){
+        loadDocuments(state.currentFolderId);
+      });
     });
   });
 
