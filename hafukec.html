@@ -406,13 +406,6 @@ input[type="password"]{
 .doc-edit-btn:hover{filter:brightness(1.1);box-shadow:0 0.02rem 0.2rem #85b1e7;}
 .doc-edit-btn.active{color:#ffffff;background-image:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn4.png);}
 
-/* edit toolbar */
-.edit-toolbar{display:none;position:fixed;top:0;left:0;width:100%;height:1.5rem;background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp4.jpg) no-repeat 50% 0 fixed;background-size:100% auto;z-index:10001;justify-content:center;align-items:center;gap:0.12rem;padding:0 0.4rem;}
-.edit-toolbar.show{display:flex;}
-.edit-toolbar button{height:0.7rem;padding:0 0.28rem;border:1px solid #c5daec;border-radius:0.08rem;background:rgba(255,255,255,0.85);font-size:0.24rem;color:#2362af;font-family:'fzltzh';cursor:pointer;transition:all 0.15s;}
-.edit-toolbar button:hover{background:#fff;border-color:#5894de;}
-.edit-toolbar .sep{width:1px;height:0.44rem;background:rgba(255,255,255,0.4);margin:0 0.04rem;}
-
 /* edit mode indicator */
 .doc-text.editing{box-shadow:0 0 0 0.06rem rgba(35,98,175,0.35),0 0 0.3rem rgba(175,193,214,0.3);}
 
@@ -420,22 +413,26 @@ input[type="password"]{
 .doc-text.editing h3::before{content:'';display:block;width:0.15rem;height:0.4rem;margin-right:0.2rem;flex-shrink:0;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA+xpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDkuMS1jMDAxIDc5LjE0NjI4OTk3NzcsIDIwMjMvMDYvMjUtMjM6NTc6MTQgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI1LjAgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyNi0wNi0wOFQxMToxNjozMCswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjYtMDYtMDhUMTg6MzM6MDIrMDg6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjYtMDYtMDhUMTg6MzM6MDIrMDg6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjZEQTE4RTU2NjMyNTExRjFBRkFBQUVCRDVEMDM3REExIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjZEQTE4RTU3NjMyNTExRjFBRkFBQUVCRDVEMDM3REExIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NkRBMThFNTQ2MzI1MTFGMUFGQUFBRUJENUQwMzdEQTEiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NkRBMThFNTU2MzI1MTFGMUFGQUFBRUJENUQwMzdEQTEiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6jcKxpAAAAjklEQVR42mI8euvNQwYGBjkG0sAvII5iYSAdgDRGAvE6FjI0RgDxehCHiVyNIMBCgsZwIN6ALMhCpMYwIN6ILsFErkZCNoM0hgLxJlwKWPBoDAHizficxYJDYzAQbyEUGCxYNAYB8VZiooCJXI3INoM0BgLxNlKSGwtUYwAQbyc1kbNAE/kZMjIIA0CAAQAm1iBEACw2uAAAAABJRU5ErkJggg==) no-repeat 50% 0;background-size:100% auto;}
 .doc-text.editing h3 i{display:none;}
 
-/* save bar - fixed at bottom above folder-box */
-.edit-savebar{display:none;position:fixed;bottom:0.2rem;left:50%;transform:translateX(-50%);width:26.26rem;padding:0.32rem 1.06rem;background:#fff;border-radius:0.2rem 0.2rem 0 0;box-shadow:0 -0.04rem 0.3rem rgba(175,193,214,0.3);z-index:10002;justify-content:space-between;align-items:center;gap:0.2rem;}
+/* unified edit bar - fixed at bottom */
+.edit-savebar{display:none;position:fixed;bottom:0.2rem;left:50%;transform:translateX(-50%);width:26.26rem;padding:0.24rem 0.4rem;background:#fff;border-radius:0.2rem;box-shadow:0 0 0.3rem rgba(175,193,214,0.3);z-index:10002;align-items:center;gap:0.16rem;}
 .edit-savebar.show{display:flex;}
-.edit-savebar button{height:0.85rem;padding:0 0.5rem;border-radius:0.1rem;font-size:0.28rem;font-family:'fzltzh';cursor:pointer;transition:all 0.15s;border:none;}
+.edit-savebar .es-left{display:flex;align-items:center;gap:0.08rem;}
+.edit-savebar .es-left button{height:0.6rem;padding:0 0.16rem;border:1px solid #c5daec;border-radius:0.08rem;background:#fff;font-size:0.2rem;color:#2362af;font-family:'fzltzh';cursor:pointer;transition:all 0.15s;}
+.edit-savebar .es-left button:hover{background:#e8f4ff;border-color:#5894de;}
+.edit-savebar .es-sep{width:1px;height:0.32rem;background:#c5daec;margin:0 0.04rem;}
+.edit-savebar .es-center{display:flex;align-items:center;gap:0.1rem;flex:1;justify-content:center;}
+.edit-savebar .es-right{display:flex;align-items:center;gap:0.12rem;}
+.edit-savebar .es-right button{height:0.65rem;padding:0 0.3rem;border-radius:0.08rem;font-size:0.22rem;font-family:'fzltzh';cursor:pointer;border:none;transition:all 0.15s;}
+.edit-savebar .lock-toggle{display:flex;align-items:center;gap:0.08rem;cursor:pointer;font-family:'fzltzh';}
+.edit-savebar .lock-toggle input[type=checkbox]{width:0.22rem;height:0.22rem;accent-color:#2362af;cursor:pointer;}
+.edit-savebar .lock-label{font-size:0.2rem;color:#6d7888;user-select:none;}
+.edit-savebar .lock-password{width:2rem;height:0.6rem;padding:0 0.16rem;border:1px solid #d0d0d0;border-radius:0.08rem;font-size:0.2rem;background:#efefef;color:#555;font-family:'fzltzh';}
+.edit-savebar .lock-password:focus{outline:none;border-color:#2362af;background:#fff;}
 .edit-savebar .btn-cancel{background:#fff;color:#6d7888;border:1px solid #d0d0d0;}
 .edit-savebar .btn-cancel:hover{background:#f5f5f5;}
 .edit-savebar .btn-save{background:#2362af;color:#fff;}
 .edit-savebar .btn-save:hover{background:#1a4d8f;box-shadow:0 0.04rem 0.2rem rgba(35,98,175,0.3);}
 .edit-savebar .btn-save:disabled{opacity:0.5;pointer-events:none;}
-
-/* lock toggle in savebar */
-.edit-savebar .lock-toggle{display:flex;align-items:center;gap:0.12rem;cursor:pointer;margin-right:auto;font-family:'fzltzh';}
-.edit-savebar .lock-toggle input[type=checkbox]{width:0.3rem;height:0.3rem;accent-color:#2362af;cursor:pointer;}
-.edit-savebar .lock-label{font-size:0.26rem;color:#6d7888;user-select:none;}
-.edit-savebar .lock-password{width:3rem;height:0.7rem;padding:0 0.2rem;border:1px solid #d0d0d0;border-radius:0.08rem;font-size:0.22rem;background:#efefef;color:#555;font-family:'fzltzh';}
-.edit-savebar .lock-password:focus{outline:none;border-color:#2362af;background:#fff;}
 
 /* token prompt (reuses login-box styles) */
 .edit-token-box{display:none;}
@@ -536,31 +533,33 @@ input[type="password"]{
   </div>
 </div>
 
-<!-- ============ 悬浮保存栏 ============ -->
+<!-- ============ 悬浮编辑栏（格式+加密+保存） ============ -->
 <div class="edit-savebar" id="editSavebar">
-  <label class="lock-toggle">
-    <input type="checkbox" id="editLock" onchange="toggleLockPassword()">
-    <span class="lock-label">加密文档</span>
-  </label>
-  <input type="password" class="lock-password" id="editLockPwd" placeholder="访问密钥..." style="visibility:hidden;">
-  <button class="btn-cancel" onclick="exitEditMode()">取消</button>
-  <button class="btn-save" id="btnEditSave" onclick="saveDocument()">保存到 GitHub</button>
+  <div class="es-left">
+    <button data-fmt="bold" onmousedown="event.preventDefault()"><b>B</b></button>
+    <button data-fmt="italic" onmousedown="event.preventDefault()"><i>I</i></button>
+    <span class="es-sep"></span>
+    <button data-fmt="formatBlock" data-fmt-arg="h2" onmousedown="event.preventDefault()">H2</button>
+    <button data-fmt="formatBlock" data-fmt-arg="h3" onmousedown="event.preventDefault()">H3</button>
+    <button data-fmt="formatBlock" data-fmt-arg="p" onmousedown="event.preventDefault()">P</button>
+    <span class="es-sep"></span>
+    <button data-fmt="insertUnorderedList" onmousedown="event.preventDefault()">列表</button>
+    <button data-fmt="insertTable" onmousedown="event.preventDefault()">表格</button>
+  </div>
+  <div class="es-center">
+    <label class="lock-toggle">
+      <input type="checkbox" id="editLock" onchange="toggleLockPassword()">
+      <span class="lock-label">加密</span>
+    </label>
+    <input type="password" class="lock-password" id="editLockPwd" placeholder="密钥..." style="visibility:hidden;">
+  </div>
+  <div class="es-right">
+    <button class="btn-cancel" onclick="exitEditMode()">取消</button>
+    <button class="btn-save" id="btnEditSave" onclick="saveDocument()">保存</button>
+  </div>
 </div>
 
 <div class="copy-toast" id="copyToast"></div>
-
-<!-- ============ 编辑工具栏 ============ -->
-<div class="edit-toolbar" id="editToolbar">
-  <button data-fmt="bold" onmousedown="event.preventDefault()"><b>B</b></button>
-  <button data-fmt="italic" onmousedown="event.preventDefault()"><i>I</i></button>
-  <span class="sep"></span>
-  <button data-fmt="formatBlock" data-fmt-arg="h2" onmousedown="event.preventDefault()">H2</button>
-  <button data-fmt="formatBlock" data-fmt-arg="h3" onmousedown="event.preventDefault()">H3</button>
-  <button data-fmt="formatBlock" data-fmt-arg="p" onmousedown="event.preventDefault()">P</button>
-  <span class="sep"></span>
-  <button data-fmt="insertUnorderedList" onmousedown="event.preventDefault()">列表</button>
-  <button data-fmt="insertTable" onmousedown="event.preventDefault()">表格</button>
-</div>
 
 <script>
 (function(){
@@ -872,8 +871,8 @@ input[type="password"]{
   function showToast(msg){
     clearTimeout(toastTimer);
     copyToast.textContent = msg;
-    copyToast.classList.add('show');
-    toastTimer = setTimeout(function(){ copyToast.classList.remove('show'); }, 1200);
+    copyToast;
+    toastTimer = setTimeout(function(){ copyToast; }, 1200);
   }
   dom.docDetailContent.addEventListener('click', function(e){
     var td = e.target.closest('.copy-code');
@@ -1027,8 +1026,8 @@ input[type="password"]{
     editState.active = true;
     editState.editingDocId = state.currentDocId;
     editState.editingDocName = dom.docDetailTitle.textContent;
-    $('#editToolbar').classList.add('show');
-    $('#editSavebar').classList.add('show');
+    $('#editToolbar');
+    $('#editSavebar');
     dom.docDetailContent.setAttribute('contenteditable', 'true');
     document.execCommand('defaultParagraphSeparator', false, 'p');
     dom.docDetailContent.classList.add('editing');
@@ -1053,8 +1052,8 @@ input[type="password"]{
 
   function exitEditMode(){
     editState.active = false;
-    $('#editToolbar').classList.remove('show');
-    $('#editSavebar').classList.remove('show');
+    $('#editToolbar');
+    $('#editSavebar');
     dom.docDetailContent.removeAttribute('contenteditable');
     dom.docDetailContent.removeEventListener('keydown', handleEditKeydown);
     dom.docDetailContent.classList.remove('editing');
@@ -1220,8 +1219,8 @@ input[type="password"]{
   function showCopyToast(msg){
     var toast = $('#copyToast');
     toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(function(){ toast.classList.remove('show'); }, 2000);
+    toast;
+    setTimeout(function(){ toast; }, 2000);
   }
 
   window.toggleLockPassword = function(){
