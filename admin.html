@@ -792,7 +792,7 @@ document.addEventListener('click', function(e){
   var cmd = btn.getAttribute('data-fmt');
   var arg = btn.getAttribute('data-fmt-arg') || null;
   var ed = document.getElementById('ed-content');
-  if (ed) ed.focus();
+  if (ed) { ed.focus(); try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch(e){} }
   if (cmd === 'insertTable') {
     insertTableAtCursor(ed);
   } else if (cmd === 'formatBlock') {

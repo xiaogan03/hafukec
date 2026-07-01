@@ -1001,6 +1001,7 @@ input[type="password"]{
     $('#editToolbar').classList.add('show');
     $('#editSavebar').classList.add('show');
     dom.docDetailContent.setAttribute('contenteditable', 'true');
+    document.execCommand('defaultParagraphSeparator', false, 'p');
     dom.docDetailContent.classList.add('editing');
     dom.docDetailContent.addEventListener('keydown', handleEditKeydown);
     $('#doc-detail-edit').textContent = '退出编辑';
