@@ -994,8 +994,16 @@ input[type="password"]{
     $('#editSavebar').classList.add('show');
     dom.docDetailContent.setAttribute('contenteditable', 'true');
     dom.docDetailContent.classList.add('editing');
+    dom.docDetailContent.addEventListener('keydown', handleEditKeydown);
     $('#doc-detail-edit').textContent = '退出编辑';
     $('#doc-detail-edit').classList.add('active');
+  }
+
+  function handleEditKeydown(e){
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.execCommand('insertParagraph', false, null);
+    }
   }
 
   function exitEditMode(){
@@ -1003,6 +1011,7 @@ input[type="password"]{
     $('#editToolbar').classList.remove('show');
     $('#editSavebar').classList.remove('show');
     dom.docDetailContent.removeAttribute('contenteditable');
+    dom.docDetailContent.removeEventListener('keydown', handleEditKeydown);
     dom.docDetailContent.classList.remove('editing');
     $('#doc-detail-edit').textContent = '编辑';
     $('#doc-detail-edit').classList.remove('active');
