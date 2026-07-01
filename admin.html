@@ -768,7 +768,14 @@ dom.folderSelect.addEventListener('change', function(){
 
 // Insert doc-table at cursor
 function insertTableAtCursor(ed){
-  document.execCommand('insertParagraph', false, null);
+  var sel = window.getSelection();
+  if (sel.rangeCount > 0) {
+    var node = sel.getRangeAt(0).commonAncestorContainer;
+    var el = node.nodeType === 3 ? node.parentElement : node;
+    if (el.closest('h1,h2,h3,h4,h5,h6')) {
+      document.execCommand('insertParagraph', false, null);
+    }
+  }
   var rows = prompt('表格行数（不含表头）:', '3');
   if (!rows) return;
   rows = parseInt(rows) || 3;
