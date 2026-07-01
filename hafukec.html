@@ -1356,19 +1356,20 @@ input[type="password"]{
 
   document.addEventListener('click', function(e){
     if (e.target.id === 'newConfirm' || (e.target.closest && e.target.closest('#newConfirm'))) {
+      var cb = newCallback;
       if (newMode === 'confirm') {
         hideNewModal();
-        if (newCallback) newCallback(true);
+        if (cb) cb(true);
       } else {
         var name = $('#newInput').value.trim();
         if (!name) return;
-        var cb = newCallback;
         hideNewModal();
         if (cb) cb(name);
       }
     }
     if (e.target.id === 'newCancel' || (e.target.closest && e.target.closest('#newCancel'))) {
-      if (newMode === 'confirm' && newCallback) newCallback(false);
+      var cb2 = newCallback;
+      if (newMode === 'confirm' && cb2) cb2(false);
       hideNewModal();
     }
   });
