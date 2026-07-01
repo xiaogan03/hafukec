@@ -829,12 +829,14 @@ input[type="password"]{
         if (folder.locked) {
           folder.locked = false;
           folder.password = '';
+          folder.icon = FOLDER_ICON;
           doSaveData('解锁目录: ' + folder.name, function(){ renderFolders(); });
         } else {
           var pwd = prompt('请输入该目录的访问密钥：');
           if (!pwd || !pwd.trim()) return;
           folder.locked = true;
           folder.password = pwd.trim();
+          folder.icon = FOLDER_ICON_LOCKED;
           doSaveData('加密目录: ' + folder.name, function(){ renderFolders(); });
         }
         return;
