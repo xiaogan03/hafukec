@@ -1028,11 +1028,10 @@ input[type="password"]{
     loadDocumentDetail(editState.editingDocId);
   }
 
-  // Format toolbar event delegation
-  $('#editToolbar').addEventListener('click', function(e){
+  // Format toolbar event delegation (mousedown to capture selection before it clears)
+  $('#editToolbar').addEventListener('mousedown', function(e){
     var btn = e.target.closest('[data-fmt]');
     if (!btn) return;
-    e.preventDefault();
     var cmd = btn.getAttribute('data-fmt');
     var arg = btn.getAttribute('data-fmt-arg') || null;
     dom.docDetailContent.focus();
