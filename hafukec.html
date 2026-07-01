@@ -1084,6 +1084,22 @@ input[type="password"]{
     editingDocName: ''
   };
 
+  // ==================== 撤销支持 ====================
+  var undoStack = [];
+  var MAX_UNDO = 50;
+
+  function saveSnapshot(){
+    if (undoStack.length >= MAX_UNDO) undoStack.shift();
+    undoStack.push(dom.docDetailContent.innerHTML);
+  }
+
+  function undo(){
+    if (undoStack.length === 0) return false;
+    dom.docDetailContent.innerHTML = undoStack.pop();
+    dom.docDetailContent.focus();
+    return true;
+  }
+
   // Edit button click
   $('#doc-detail-edit').addEventListener('click', function(){
     if (editState.active) {
@@ -1110,6 +1126,8 @@ input[type="password"]{
     document.execCommand('defaultParagraphSeparator', false, 'p');
     dom.docDetailContent.classList.add('editing');
     dom.docDetailContent.addEventListener('keydown', handleEditKeydown);
+    undoStack = [];
+    saveSnapshot();
     // Pre-fill lock state
     var doc = findCurrentDoc();
     if (doc) {
@@ -1124,7 +1142,13 @@ input[type="password"]{
   function handleEditKeydown(e){
     if (e.key === 'Enter') {
       e.preventDefault();
+      saveSnapshot();
       document.execCommand('insertParagraph', false, null);
+    } else if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
+      if (undoStack.length > 0) {
+        e.preventDefault();
+        undo();
+      }
     }
   }
 
@@ -1148,8 +1172,10 @@ input[type="password"]{
     var arg = btn.getAttribute('data-fmt-arg') || null;
     dom.docDetailContent.focus();
     if (cmd === 'insertTable') {
+      saveSnapshot();
       insertTable();
     } else if (cmd === 'formatBlock') {
+      saveSnapshot();
       var sel = window.getSelection();
       if (sel.rangeCount === 0) { document.execCommand(cmd, false, arg); return; }
       var range = sel.getRangeAt(0);
@@ -1181,6 +1207,7 @@ input[type="password"]{
         }
       }
     } else {
+      saveSnapshot();
       document.execCommand(cmd, false, arg);
     }
   });
