@@ -542,7 +542,7 @@ input[type="password"]{
     <input type="checkbox" id="editLock" onchange="toggleLockPassword()">
     <span class="lock-label">加密文档</span>
   </label>
-  <input type="password" class="lock-password" id="editLockPwd" placeholder="访问密钥..." style="display:none;">
+  <input type="password" class="lock-password" id="editLockPwd" placeholder="访问密钥..." style="visibility:hidden;">
   <button class="btn-cancel" onclick="exitEditMode()">取消</button>
   <button class="btn-save" id="btnEditSave" onclick="saveDocument()">保存到 GitHub</button>
 </div>
@@ -1038,7 +1038,7 @@ input[type="password"]{
     if (doc) {
       $('#editLock').checked = doc.locked || false;
       $('#editLockPwd').value = doc.password || '';
-      $('#editLockPwd').style.display = doc.locked ? 'block' : 'none';
+      $('#editLockPwd').style.visibility = doc.locked ? 'visible' : 'hidden';
     }
     $('#doc-detail-edit').textContent = '退出编辑';
     $('#doc-detail-edit').classList.add('active');
@@ -1226,7 +1226,7 @@ input[type="password"]{
 
   window.toggleLockPassword = function(){
     var checked = $('#editLock').checked;
-    $('#editLockPwd').style.display = checked ? 'block' : 'none';
+    $('#editLockPwd').style.visibility = checked ? 'visible' : 'hidden';
   };
   window.exitEditMode = exitEditMode;
   window.saveDocument = saveDocument;
