@@ -394,6 +394,35 @@ input[type="password"]{
 /* toast */
 .copy-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#fff;color:#494949;padding:0.16rem 0.5rem;border-radius:0.08rem;font-size:0.26rem;font-family:'fzltzh';z-index:99999;pointer-events:none;opacity:0;box-shadow:0 0.02rem 0.16rem rgba(0,0,0,0.12);transition:all 0.25s ease;}
 .copy-toast.show{opacity:1;transform:translateX(-50%) translateY(-0.06rem);}
+
+/* ============ Edit Mode ============ */
+.doc-edit-btn{position:absolute;top:1rem;right:5.6rem;background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn5.png) no-repeat 50% 0;background-size:100% auto;width:2.92rem;height:0.97rem;font-size:0.36rem;color:#5894de;text-align:center;line-height:0.96rem;font-family:'fzltzh';cursor:pointer;transition:all 0.2s ease-in-out;}
+.doc-edit-btn:hover{filter:brightness(1.1);box-shadow:0 0.02rem 0.2rem #85b1e7;}
+.doc-edit-btn.active{color:#ffffff;background-image:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/btn4.png);}
+
+/* edit toolbar */
+.edit-toolbar{display:none;position:fixed;top:0;left:0;width:100%;height:1.5rem;background:url(https://game.gtimg.cn/images/dfm/cp/havvkrelink/rp4.jpg) no-repeat 50% 0 fixed;background-size:100% auto;z-index:100;justify-content:center;align-items:center;gap:0.12rem;padding:0 0.4rem;}
+.edit-toolbar.show{display:flex;}
+.edit-toolbar button{height:0.7rem;padding:0 0.28rem;border:1px solid #c5daec;border-radius:0.08rem;background:rgba(255,255,255,0.85);font-size:0.24rem;color:#2362af;font-family:'fzltzh';cursor:pointer;transition:all 0.15s;}
+.edit-toolbar button:hover{background:#fff;border-color:#5894de;}
+.edit-toolbar .sep{width:1px;height:0.44rem;background:rgba(255,255,255,0.4);margin:0 0.04rem;}
+
+/* edit mode indicator */
+.doc-text.editing{box-shadow:0 0 0 0.06rem rgba(35,98,175,0.35),0 0 0.3rem rgba(175,193,214,0.3);}
+
+/* save bar */
+.edit-savebar{display:none;width:26.26rem;margin:0 auto 1rem;padding:0.32rem 1.06rem;background:#fff;border-radius:0.2rem;box-shadow:0 0 0.3rem rgba(175,193,214,0.3);justify-content:flex-end;align-items:center;gap:0.2rem;}
+.edit-savebar.show{display:flex;}
+.edit-savebar button{height:0.85rem;padding:0 0.5rem;border-radius:0.1rem;font-size:0.28rem;font-family:'fzltzh';cursor:pointer;transition:all 0.15s;border:none;}
+.edit-savebar .btn-cancel{background:#fff;color:#6d7888;border:1px solid #d0d0d0;}
+.edit-savebar .btn-cancel:hover{background:#f5f5f5;}
+.edit-savebar .btn-save{background:#2362af;color:#fff;}
+.edit-savebar .btn-save:hover{background:#1a4d8f;box-shadow:0 0.04rem 0.2rem rgba(35,98,175,0.3);}
+.edit-savebar .btn-save:disabled{opacity:0.5;pointer-events:none;}
+
+/* token prompt (reuses login-box styles) */
+.edit-token-box{display:none;}
+.edit-token-box.show{display:block;}
 </style>
 </head>
 <body>
@@ -433,6 +462,7 @@ input[type="password"]{
   <div class="doc-content" style="display:none;" id="doc-list">
     <div class="doc-title">
       <h2 class="doc-tit"><span id="doc-list-title"></span></h2>
+      <a href="javascript:;" class="doc-edit-btn" id="doc-list-edit" style="display:none;">编辑</a>
       <a href="javascript:;" class="doc-back" id="doc-list-back">返回</a>
     </div>
     <div class="doc-ct" id="doc-list-content"></div>
@@ -442,9 +472,14 @@ input[type="password"]{
   <div class="doc-content" style="display:none;" id="doc-detail">
     <div class="doc-title">
       <h2 class="doc-tit"><span id="doc-detail-title"></span></h2>
+      <a href="javascript:;" class="doc-edit-btn" id="doc-detail-edit">编辑</a>
       <a href="javascript:;" class="doc-back" id="doc-detail-back">返回</a>
     </div>
     <div class="doc-text" id="doc-detail-content"></div>
+    <div class="edit-savebar" id="editSavebar">
+      <button class="btn-cancel" onclick="exitEditMode()">取消</button>
+      <button class="btn-save" id="btnEditSave" onclick="saveDocument()">保存到 GitHub</button>
+    </div>
   </div>
 </div>
 
@@ -487,6 +522,20 @@ input[type="password"]{
 </div>
 
 <div class="copy-toast" id="copyToast"></div>
+
+<!-- ============ 编辑工具栏 ============ -->
+<div class="edit-toolbar" id="editToolbar">
+  <button data-fmt="bold" onmousedown="event.preventDefault()"><b>B</b></button>
+  <button data-fmt="italic" onmousedown="event.preventDefault()"><i>I</i></button>
+  <span class="sep"></span>
+  <button data-fmt="formatBlock" data-fmt-arg="h2" onmousedown="event.preventDefault()">H2</button>
+  <button data-fmt="formatBlock" data-fmt-arg="h3" onmousedown="event.preventDefault()">H3</button>
+  <button data-fmt="formatBlock" data-fmt-arg="p" onmousedown="event.preventDefault()">P</button>
+  <span class="sep"></span>
+  <button data-fmt="insertUnorderedList" onmousedown="event.preventDefault()">列表</button>
+  <button data-fmt="insertTable" onmousedown="event.preventDefault()">表格</button>
+</div>
+
 <script>
 (function(){
   'use strict';
@@ -558,6 +607,7 @@ input[type="password"]{
   // ==================== 页面切换 ====================
   function showPage(page) {
     if (page === 'login') {
+      if (editState.active) exitEditMode();
       dom.adminOverlay.style.display = 'block';
       dom.folderOverlay.style.display = 'none';
     } else {
@@ -566,6 +616,9 @@ input[type="password"]{
       dom.folderContent.style.display = (page === 'folder') ? 'block' : 'none';
       dom.docList.style.display = (page === 'doc_list') ? 'block' : 'none';
       dom.docDetail.style.display = (page === 'doc_detail') ? 'block' : 'none';
+      // Show/hide edit button only on doc_detail
+      $('#doc-detail-edit').style.display = (page === 'doc_detail') ? 'block' : 'none';
+      if (page !== 'doc_detail' && editState.active) exitEditMode();
     }
   }
 
@@ -912,6 +965,171 @@ input[type="password"]{
   $('.unlocked-close').addEventListener('click', function(){
     dom.unlockedOverlay.style.display = 'none';
   });
+
+  // ==================== 悬浮编辑 ====================
+  var editState = {
+    active: false,
+    editingDocId: '',
+    editingDocName: ''
+  };
+
+  // Edit button click
+  $('#doc-detail-edit').addEventListener('click', function(){
+    if (editState.active) {
+      exitEditMode();
+    } else {
+      enterEditMode();
+    }
+  });
+
+  function enterEditMode(){
+    editState.active = true;
+    editState.editingDocId = state.currentDocId;
+    editState.editingDocName = dom.docDetailTitle.textContent;
+    $('#editToolbar').classList.add('show');
+    $('#editSavebar').classList.add('show');
+    dom.docDetailContent.setAttribute('contenteditable', 'true');
+    dom.docDetailContent.classList.add('editing');
+    $('#doc-detail-edit').textContent = '退出编辑';
+    $('#doc-detail-edit').classList.add('active');
+  }
+
+  function exitEditMode(){
+    editState.active = false;
+    $('#editToolbar').classList.remove('show');
+    $('#editSavebar').classList.remove('show');
+    dom.docDetailContent.removeAttribute('contenteditable');
+    dom.docDetailContent.classList.remove('editing');
+    $('#doc-detail-edit').textContent = '编辑';
+    $('#doc-detail-edit').classList.remove('active');
+    // Restore original content
+    loadDocumentDetail(editState.editingDocId);
+  }
+
+  // Format toolbar event delegation
+  $('#editToolbar').addEventListener('click', function(e){
+    var btn = e.target.closest('[data-fmt]');
+    if (!btn) return;
+    e.preventDefault();
+    var cmd = btn.getAttribute('data-fmt');
+    var arg = btn.getAttribute('data-fmt-arg') || null;
+    dom.docDetailContent.focus();
+    if (cmd === 'insertTable') {
+      insertTable();
+    } else {
+      document.execCommand(cmd, false, arg);
+    }
+  });
+
+  function insertTable(){
+    var rows = parseInt(prompt('表格行数（不含表头）:', '3')) || 3;
+    var cols = parseInt(prompt('表格列数:', '2')) || 2;
+    var html = '<table class=\"doc-table\"><tr>';
+    for (var c = 0; c < cols; c++) html += '<th>表头' + (c+1) + '</th>';
+    html += '</tr>';
+    for (var r = 0; r < rows; r++) {
+      html += '<tr>';
+      for (var c = 0; c < cols; c++) html += '<td>内容</td>';
+      html += '</tr>';
+    }
+    html += '</table><p>&#8203;</p>';
+    document.execCommand('insertHTML', false, html);
+  }
+
+  // Save document to GitHub
+  function saveDocument(){
+    var token = localStorage.getItem('gh_token');
+    if (!token) {
+      promptToken();
+      return;
+    }
+    doSave(token);
+  }
+
+  function doSave(token){
+    var btn = $('#btnEditSave');
+    btn.disabled = true;
+    btn.textContent = '保存中...';
+
+    var newContent = dom.docDetailContent.innerHTML;
+    var docId = editState.editingDocId;
+
+    // Update mockData
+    for (var folderId in mockData.documents) {
+      var found = mockData.documents[folderId].find(function(d){ return d.id === docId; });
+      if (found) { found.content = newContent; break; }
+    }
+
+    // Save data.json to GitHub
+    var body = JSON.stringify(mockData, null, 2);
+    // Get SHA first
+    fetch('https://api.github.com/repos/xiaogan03/hafukec/contents/data.json?ref=master', {
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      // Encode content
+      var bytes = new TextEncoder().encode(body);
+      var bin = '';
+      for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      var base64 = btoa(bin);
+
+      return fetch('https://api.github.com/repos/xiaogan03/hafukec/contents/data.json', {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: '更新 ' + editState.editingDocName + ' [悬浮编辑]',
+          content: base64,
+          sha: res.sha,
+          branch: 'master'
+        })
+      });
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(){
+      btn.disabled = false;
+      btn.textContent = '保存到 GitHub';
+      showCopyToast('保存成功！1-2分钟后刷新可见');
+      exitEditMode();
+      // Reload data so next view is fresh
+      loadData().then(function(){
+        loadDocumentDetail(docId);
+        showPage('doc_detail');
+      });
+    })
+    .catch(function(err){
+      btn.disabled = false;
+      btn.textContent = '保存到 GitHub';
+      showCopyToast('保存失败: ' + err.message);
+      if (err.message.indexOf('401') >= 0) {
+        localStorage.removeItem('gh_token');
+        promptToken();
+      }
+    });
+  }
+
+  function promptToken(){
+    var tok = prompt('请输入 GitHub Personal Access Token：\n（创建地址：github.com/settings/tokens，需勾选 repo 权限）');
+    if (tok && tok.trim()) {
+      localStorage.setItem('gh_token', tok.trim());
+      showCopyToast('Token 已保存');
+      doSave(tok.trim());
+    }
+  }
+
+  function showCopyToast(msg){
+    var toast = $('#copyToast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, 2000);
+  }
+
+  window.exitEditMode = exitEditMode;
+  window.saveDocument = saveDocument;
 
   // ==================== 初始化 ====================
   loadData().then(function() {
