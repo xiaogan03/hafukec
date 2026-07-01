@@ -63,18 +63,11 @@
       "password": "111"
     },
     {
-      "id": "folder_1782938459320",
-      "name": "笃定的",
-      "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder2.png",
-      "locked": true,
-      "password": "我"
-    },
-    {
-      "id": "folder_1782938506262",
-      "name": "11",
-      "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder2.png",
-      "locked": true,
-      "password": "111"
+      "id": "folder_1782938604259",
+      "name": "111",
+      "icon": "https://game.gtimg.cn/images/dfm/cp/havvkrelink/folder1.png",
+      "locked": false,
+      "password": ""
     }
   ],
   "documents": {
@@ -220,7 +213,6 @@
         "content": "<h2>香港</h2><h3>我的</h3><table class=\"doc-table\"><tbody><tr><th>表头1</th><th>表头2</th></tr><tr><td>内容</td><td>内容</td></tr><tr><td>内容</td><td>内容</td></tr><tr><td>内容</td><td>内容</td></tr></tbody></table><p>​在大苏打撒旦发</p><p></p>"
       }
     ],
-    "folder_1782938459320": [],
-    "folder_1782938506262": []
+    "folder_1782938604259": []
   }
 }
