@@ -1148,8 +1148,17 @@ input[type="password"]{
       e.preventDefault();
       saveSnapshot();
       dom.docDetailContent.focus();
-      // Shift+Enter = new <p>, regular Enter = <br> (matches original style)
-      if (e.shiftKey) {
+      // Smart Enter: inside <p> → <br>, otherwise → new <p>
+      var sel = window.getSelection();
+      var inP = false;
+      if (sel.rangeCount > 0) {
+        var node = sel.getRangeAt(0).commonAncestorContainer;
+        var el = node.nodeType === 3 ? node.parentElement : node;
+        inP = el.closest('p') && !el.closest('table,li,blockquote');
+      }
+      if (inP) {
+        document.execCommand('insertLineBreak', false, null);
+      } else {
         document.execCommand('insertParagraph', false, null);
         setTimeout(function(){
           var divs = dom.docDetailContent.querySelectorAll('div');
@@ -1161,8 +1170,6 @@ input[type="password"]{
             d.parentNode.replaceChild(np, d);
           }
         }, 0);
-      } else {
-        document.execCommand('insertLineBreak', false, null);
       }
     } else if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
       if (undoStack.length > 0) {
