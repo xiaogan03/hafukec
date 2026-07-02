@@ -1165,15 +1165,20 @@ input[type="password"]{
         }
       }
       document.execCommand('insertParagraph', false, null);
-      // Convert any accidental <div> to <p>
+      // Clean up: convert <div> to <p>, remove trailing <br>
       setTimeout(function(){
         var divs = dom.docDetailContent.querySelectorAll('div');
         for (var i = divs.length - 1; i >= 0; i--) {
           var d = divs[i];
-          if (d.closest('table')) continue; // skip divs inside tables
+          if (d.closest('table')) continue;
           var np = document.createElement('p');
           while (d.firstChild) { np.appendChild(d.firstChild); }
           d.parentNode.replaceChild(np, d);
+        }
+        var ps = dom.docDetailContent.querySelectorAll('p');
+        for (var i = ps.length - 1; i >= 0; i--) {
+          var last = ps[i].lastChild;
+          if (last && last.nodeName === 'BR') { last.remove(); }
         }
       }, 0);
     } else if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
@@ -1290,8 +1295,9 @@ input[type="password"]{
     btn.textContent = '保存中...';
 
     var newContent = dom.docDetailContent.innerHTML;
-    // Clean up nested <p> from old buggy P button
+    // Clean up nested <p> and trailing <br> that add extra spacing
     newContent = newContent.replace(/<p>\s*(<p[^>]*>)/gi, '$1').replace(/(<\/p>)\s*<\/p>/gi, '$1');
+    newContent = newContent.replace(/<br\s*\/?>\s*(<\/p>)/gi, '$1');
     var docId = editState.editingDocId;
 
     // Update mockData
