@@ -1292,10 +1292,20 @@ input[type="password"]{
     btn.disabled = true;
     btn.textContent = '保存中...';
 
-    var newContent = dom.docDetailContent.innerHTML;
-    // Clean up nested <p> and trailing <br> that add extra spacing
-    newContent = newContent.replace(/<p>\s*(<p[^>]*>)/gi, '$1').replace(/(<\/p>)\s*<\/p>/gi, '$1');
-    newContent = newContent.replace(/<br\s*\/?>\s*(<\/p>)/gi, '$1');
+    // Clean up via DOM: remove trailing <br> and unwrap nested <p>
+    var clone = dom.docDetailContent.cloneNode(true);
+    var ps = clone.querySelectorAll('p');
+    for (var i = 0; i < ps.length; i++) {
+      var last = ps[i].lastChild;
+      while (last && last.nodeName === 'BR') { last.remove(); last = ps[i].lastChild; }
+    }
+    var nested = clone.querySelectorAll('p p');
+    for (var i = nested.length - 1; i >= 0; i--) {
+      var outer = nested[i].parentNode;
+      while (nested[i].firstChild) { outer.insertBefore(nested[i].firstChild, nested[i]); }
+      outer.removeChild(nested[i]);
+    }
+    var newContent = clone.innerHTML;
     var docId = editState.editingDocId;
 
     // Update mockData
