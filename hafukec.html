@@ -1145,20 +1145,17 @@ input[type="password"]{
       e.preventDefault();
       saveSnapshot();
       dom.docDetailContent.focus();
-      // If inside a heading, insert a new paragraph after it
       var sel = window.getSelection();
       if (sel.rangeCount > 0) {
         var node = sel.getRangeAt(0).commonAncestorContainer;
         var el = node.nodeType === 3 ? node.parentElement : node;
         var h = el.closest('h1,h2,h3,h4,h5,h6');
         if (h) {
+          // Inside heading: insert new <p> after heading
           var p = document.createElement('p');
           p.innerHTML = '<br>';
-          if (h.nextSibling) {
-            h.parentNode.insertBefore(p, h.nextSibling);
-          } else {
-            h.parentNode.appendChild(p);
-          }
+          if (h.nextSibling) { h.parentNode.insertBefore(p, h.nextSibling); }
+          else { h.parentNode.appendChild(p); }
           var range = document.createRange();
           range.setStart(p, 0);
           range.collapse(true);
@@ -1168,6 +1165,17 @@ input[type="password"]{
         }
       }
       document.execCommand('insertParagraph', false, null);
+      // Convert any accidental <div> to <p>
+      setTimeout(function(){
+        var divs = dom.docDetailContent.querySelectorAll('div');
+        for (var i = divs.length - 1; i >= 0; i--) {
+          var d = divs[i];
+          if (d.closest('table')) continue; // skip divs inside tables
+          var np = document.createElement('p');
+          while (d.firstChild) { np.appendChild(d.firstChild); }
+          d.parentNode.replaceChild(np, d);
+        }
+      }, 0);
     } else if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
       if (undoStack.length > 0) {
         e.preventDefault();
