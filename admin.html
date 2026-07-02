@@ -824,7 +824,6 @@ document.addEventListener('mousedown', function(e){
     }
     if (arg === 'p') {
       if (curHeading) { replaceWith(curHeading, 'p'); }
-      else { document.execCommand(cmd, false, arg); }
     } else {
       if (curHeading && curHeading.tagName.toLowerCase() === arg) {
         replaceWith(curHeading, 'p');

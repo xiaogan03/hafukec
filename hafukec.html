@@ -1228,7 +1228,7 @@ input[type="password"]{
       }
       if (arg === 'p') {
         if (curHeading) { replaceWith(curHeading, 'p'); }
-        else { document.execCommand(cmd, false, arg); }
+        // If already in a <p>, do nothing — execCommand would double-wrap it
       } else {
         if (curHeading && curHeading.tagName.toLowerCase() === arg) {
           replaceWith(curHeading, 'p');
@@ -1290,6 +1290,8 @@ input[type="password"]{
     btn.textContent = '保存中...';
 
     var newContent = dom.docDetailContent.innerHTML;
+    // Clean up nested <p> from old buggy P button
+    newContent = newContent.replace(/<p>\s*(<p[^>]*>)/gi, '$1').replace(/(<\/p>)\s*<\/p>/gi, '$1');
     var docId = editState.editingDocId;
 
     // Update mockData
