@@ -1237,6 +1237,15 @@ input[type="password"]{
       saveSnapshot();
       document.execCommand(cmd, false, arg);
     }
+    // Clean up empty <p> left by formatBlock
+    setTimeout(function(){
+      var ps = dom.docDetailContent.querySelectorAll('p');
+      for (var i = ps.length - 1; i >= 0; i--) {
+        if (!ps[i].textContent.trim() && !ps[i].querySelector('img,table,br')) {
+          ps[i].remove();
+        }
+      }
+    }, 0);
   });
 
   function insertTable(){
